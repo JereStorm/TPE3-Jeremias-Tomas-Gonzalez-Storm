@@ -1,0 +1,52 @@
+body{
+    font-family: 'Alfa Slab One', cursive;
+    font-family: 'Bebas Neue', cursive;
+    font-family: 'Quicksand', sans-serif;
+}
+header{
+    height: 100px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-bottom: 2px solid black;
+}
+header h1{
+    padding: 20px;
+}
+
+button{
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+}
+.canvas_container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: bisque;
+    height: 80vh;
+}
+.menu{
+    padding:10px 20px;
+    background: #01849892;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+.selected{
+    background: #3f3f3f;
+    color: aliceblue;
+}
+.color-selector{
+    border-radius: 5px;
+}
+
+#canvas{
+    border: 1px solid black;
+    border-radius: 15px;
+
+}
