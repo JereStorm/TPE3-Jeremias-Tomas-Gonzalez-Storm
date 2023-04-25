@@ -27,13 +27,14 @@ button{
     align-items: center;
     background-color: bisque;
     height: 80vh;
+    width: 100%;
 }
 .menu{
     padding:10px 20px;
     background: #01849892;
     border-radius: 15px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     justify-content: space-between;
 }
@@ -48,5 +49,4 @@ button{
 #canvas{
     border: 1px solid black;
     border-radius: 15px;
-
 }

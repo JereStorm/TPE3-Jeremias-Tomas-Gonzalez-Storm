@@ -31,16 +31,26 @@
             <div>
                 <input type="range" oninput="setRange(this.value)" name="range" id="range" min="1" max="10" value="1">
             </div>
+            <div>
+                <button id="reset">Blanquear</button>
+
+            </div>
         </div>
 
-        <div class="menu">
-            <button onclick="cleanCanvas()">Blanquear</button>
+        <div>
+            <input type="file" name="image" id="file_sl">
+            <div class="menu">
+                <button onclick="addFilterGrey()">Aplicar filtro gris</button>
+                <button onclick="addFilterInvert()">Aplicar filtro invertido</button>
+                <button onclick="addFilterSepia()">Aplicar filtro Sepia</button>
+            </div>
+
         </div>
     </header>
 
 
     <div class="canvas_container">
-        <canvas id="canvas" width="600px" height="400px">
+        <canvas id="canvas" width="800px" height="500px">
 
         </canvas>
     </div>
