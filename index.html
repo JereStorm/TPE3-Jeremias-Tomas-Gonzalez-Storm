@@ -20,30 +20,31 @@
     <header class="data_container">
         <h1>Trabajo Practico Entregable 3</h1>
 
-
         <div class="menu">
-            <div>
+
+            <div class="painter">
                 <button id="pencil"><i class="bi bi-pencil"></i></button>
                 <input class="color-selector" type="color" oninput="setColor(this.value)" name="color-selector"
                     id="color-selector">
                 <button id="eraser"><i class="bi bi-eraser"></i></button>
-            </div>
-            <div>
+
                 <input type="range" oninput="setRange(this.value)" name="range" id="range" min="1" max="10" value="1">
             </div>
-            <div>
+
+            <div class="canvas_driver">
                 <button id="reset">Blanquear</button>
-
+                <input type="file" name="image" id="file_sl">
             </div>
-        </div>
 
-        <div>
-            <input type="file" name="image" id="file_sl">
-            <div class="menu">
+            <div class="filters">
                 <button onclick="addFilterGrey()">Aplicar filtro gris</button>
                 <button onclick="addFilterInvert()">Aplicar filtro invertido</button>
                 <button onclick="addFilterSepia()">Aplicar filtro Sepia</button>
+                <button onclick="addFilterBrightness()">Aplicar filtro Brillo</button>
+                <button onclick="addFilterSaturation()">Aplicar filtro Saturacion</button>
             </div>
+
+        </div>
 
         </div>
     </header>

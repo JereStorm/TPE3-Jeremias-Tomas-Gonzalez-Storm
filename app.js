@@ -55,10 +55,11 @@ eraser.addEventListener('click', () => {
 
 canvas.addEventListener("mousedown", function (e) {
     if (pencil.classList.contains('selected') || eraser.classList.contains('selected')) {
+        //Seteo las variables posX y posY con la posicion inicial del mouse al quere dibujar
         setMousePos(e);
         drawing = true;
     }
-    //Seteo las variables posX y posY con la posicion inicial del mouse al quere dibujar
+
 })
 
 canvas.addEventListener("mousemove", function (evt) {
@@ -179,10 +180,69 @@ function addFilterSepia() {
     const data = imageData.data;
 
     for (let i = 0; i < data.length; i += 4) {
+
         data[i] = Math.min((data[i] * 0.393) + (data[i + 1] * 0.769) + (data[i + 2] * 0.189), 255); // red
         data[i + 1] = Math.min((data[i] * 0.349) + (data[i + 1] * 0.686) + (data[i + 2] * 0.168), 255); // green
         data[i + 2] = Math.min((data[i] * 0.272) + (data[i + 1] * 0.534) + (data[i + 2] * 0.131), 255); // blue
+
     }
 
     ctx.putImageData(imageData, width / 2 - img.width / 2, height / 2 - img.height / 2);
+}
+
+function addFilterBrightness() {
+    if (img.src == '') {
+        return
+    }
+
+    let imageData = ctx.getImageData(width / 2 - img.width / 2, height / 2 - img.height / 2, img.width, img.height);
+
+    const data = imageData.data;
+
+    for (let i = 0; i < data.length; i += 4) {
+        if (data[i] < 240) {
+            data[i] = data[i] + 14; // red 
+        }
+        if (data[i + 1] < 240) {
+
+            data[i + 1] = data[i + 1] + 14; // green
+        }
+        if (data[i + 2] < 240) {
+            data[i + 2] = data[i + 2] + 14; // blue
+        }
+
+    }
+
+    ctx.putImageData(imageData, width / 2 - img.width / 2, height / 2 - img.height / 2);
+}
+
+function addFilterSaturation() {
+
+    if (img.src == '') {
+        return
+    }
+
+    let imageData = ctx.getImageData(width / 2 - img.width / 2, height / 2 - img.height / 2, img.width, img.height);
+
+    const data = imageData.data;
+
+    for (let i = 0; i < data.length; i += 4) {
+        let bigger = Math.max(data[i], data[i + 1], data[i + 2]);
+
+        if (bigger <= 245 && bigger == data[i]) {
+            data[i] += 10;
+            data[i + 1] -= 20;
+            data[i + 2] -= 20;
+        } else if (bigger <= 245 && bigger == data[i + 1]) {
+            data[i] -= 20;
+            data[i + 1] += 10;
+            data[i + 2] -= 20;
+        } else if (bigger <= 245 && bigger == data[i + 2]) {
+            data[i] -= 20;
+            data[i + 1] -= 20;
+            data[i + 2] += 10;
+        }
+    }
+    ctx.putImageData(imageData, width / 2 - img.width / 2, height / 2 - img.height / 2);
+
 }
