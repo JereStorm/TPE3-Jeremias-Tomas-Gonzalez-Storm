@@ -31,21 +31,11 @@
                 <input type="range" oninput="setRange(this.value)" name="range" id="range" min="1" max="10" value="1">
             </div>
 
+
             <div class="canvas_driver">
                 <button id="reset">Blanquear</button>
                 <input type="file" name="image" id="file_sl">
             </div>
-
-            <div class="filters">
-                <button onclick="addFilterGrey()">Aplicar filtro gris</button>
-                <button onclick="addFilterInvert()">Aplicar filtro invertido</button>
-                <button onclick="addFilterSepia()">Aplicar filtro Sepia</button>
-                <button onclick="addFilterBrightness()">Aplicar filtro Brillo</button>
-                <button onclick="addFilterSaturation()">Aplicar filtro Saturacion</button>
-            </div>
-
-        </div>
-
         </div>
     </header>
 
@@ -54,11 +44,21 @@
         <canvas id="canvas" width="800px" height="500px">
 
         </canvas>
+        <div class="filters">
+            <button data-id="grey">Aplicar filtro gris</button>
+            <button data-id="invert">Aplicar filtro invertido</button>
+            <button data-id="sepia">Aplicar filtro Sepia</button>
+            <button data-id="brightness">Aplicar filtro Brillo</button>
+            <button data-id="saturation">Aplicar filtro Saturacion</button>
+            <button data-id="blur">Filtro Blur</button>
+            <button data-id="binarization">Binarization</button>
+        </div>
+
     </div>
 
-
-
-    <script src=" app.js"></script>
+    <script src="app.js"></script>
+    <script src="js/pencil.js"></script>
+    <script src="js/myImage.js"></script>
 </body>
 
 

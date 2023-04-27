@@ -4,16 +4,19 @@ body{
     font-family: 'Alfa Slab One', cursive;
     font-family: 'Bebas Neue', cursive;
     font-family: 'Quicksand', sans-serif;
+    background-color: rgb(21, 21, 21);
+    color: azure;
 }
 header{
     height: 80px;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
     border-bottom: 2px solid black;
 }
 header h1{
     padding: 20px;
+    width: fit-content;
 }
 
 button{
@@ -27,48 +30,82 @@ button{
     box-shadow: none;
     cursor: pointer;
 }
+
 /*-------------------------------------- CLASES ---------------------------------------------*/
 
 .menu{
+    width: 100%;
     border-radius: 15px;
     display: flex;
     flex-direction: row;
+    gap: 100px;
     align-items: center;
 }
 .filters{
     display: flex;
+    flex-direction: column;
     gap: 10px;
     align-items: center;
     border-radius: 10px;
     padding: 10px;
 }
+.filters button {
+    padding: 15px;
+    width: 120px;
+    transition: all .5s ease;
+}
+.filters button:hover{
+    background-color: black;
+    color: aliceblue;
+    border-bottom: 1px solid wheat;
+}
 .painter {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
     text-align: center;
     padding: 10px;
 }
+.painter button {
+    font-size: 1.5rem;
+}
 .canvas_driver{
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    align-items:flex-start;
+    gap: 50px;
 }
 .selected{
     background: aliceblue;
+    border: 2px solid rgb(0, 255, 242);
     color:#3f3f3f;
 }
 .color-selector{
+    background: rgb(0, 208, 197);
     border-radius: 5px;
+    width: 5rem;
+    height: 3rem;
 }
 .canvas_container{
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background-color: bisque;
-    height: 80vh;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: start;
+    background-color: rgb(67, 67, 67);
+    height: calc(100vh - 100px);
     width: 100%;
 }
 #canvas{
     border: 1px solid black;
     border-radius: 15px;
+    margin: 10px;
+}
+
+#range{
+    width: 150px;
+    color: rgb(0, 208, 197) !important;
+
+}
+
+.data_container .menu .painter, .canvas_driver{
+    font-size: 3rem;
 }
