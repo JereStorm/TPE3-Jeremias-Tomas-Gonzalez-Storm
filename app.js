@@ -6,11 +6,7 @@ const rect = canvas.getBoundingClientRect();
 
 const filters = document.querySelector('.filters').children;
 
-for (let filtro of filters) {
-    filtro.addEventListener('click', () => {
-        myImg.addFilter(filtro.getAttribute('data-id'));
-    })
-};
+
 
 const width = canvas.width;
 const height = canvas.height;
@@ -25,6 +21,8 @@ const img = new Image();
 
 let myImg = null;
 let myPencil = null;
+let last_filter = '';
+
 
 let posX = 0;
 let posY = 0;
@@ -35,6 +33,13 @@ let color = color_sl.value;
 let range = range_sl.value;
 
 //------------------------------- MANEJANDO EVENTOS ---------------------------------------//
+
+for (let filtro of filters) {
+    filtro.addEventListener('click', () => {
+        filtersDriver(filtro);
+    })
+};
+
 
 reset_btn.addEventListener('click', function () {
     file_sl.value = null;
@@ -63,12 +68,12 @@ file_sl.addEventListener('change', () => {
         // width and height in order to fit within the canvas
 
         if (x > y) {
-            myImg = new myImage(img, ctx, width - newWidth - (x - y), height - newHeight);
+            myImg = new myImage(img, ctx, width - newWidth - (x - y), height - newHeight, newWidth, newHeight);
         } else {
-            myImg = new myImage(img, ctx, width - newWidth, height - newHeight - (y - x));
+            myImg = new myImage(img, ctx, width - newWidth, height - newHeight - (y - x), newWidth, newHeight);
         }
 
-        myImg.myDrawImage(newWidth, newHeight);
+        myImg.myDrawImage();
     }
 })
 
@@ -125,10 +130,6 @@ function cleanCanvas() {
     ctx.fillRect(0, 0, width, height);
 }
 
-function myDrawImage() {
-    ctx.drawImage(img, width / 2 - img.width / 2, height / 2 - img.height / 2);
-}
-
 function getMousePos(evt) {
     return {
         x: evt.clientX - rect.left,
@@ -146,4 +147,28 @@ function setColor(c) {
 
 function setRange(g) {
     range = g;
+}
+
+function filtersDriver(filtro) {
+    if (!file_sl.files[0]) {
+        return
+    }
+    let filterName = filtro.getAttribute('data-id');
+
+    filtro.classList.add('filtro-selected');
+
+    for (let otherFiltro of filters) {
+        if (otherFiltro.getAttribute('data-id') != filterName) {
+            otherFiltro.classList.remove('filtro-selected');
+        }
+    }
+
+    if (filterName == last_filter) {
+        filtro.classList.toggle('filtro-selected');
+        last_filter = null;
+    } else {
+        last_filter = filterName;
+    }
+
+    myImg.addFilter(filtro.getAttribute('data-id'));
 }

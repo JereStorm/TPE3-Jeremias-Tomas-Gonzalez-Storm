@@ -1,18 +1,22 @@
 
 class myImage {
 
-    constructor(img, context, posX, posY) {
+    constructor(img, context, posX, posY, newWidth, newHeight) {
         this.img = img;
         this.ctx = context;
         this.posX = posX;
         this.posY = posY;
-        this.newX = null;
-        this.newY = null;
-    }
-
-    myDrawImage(newWidth, newHeight) {
         this.newWidth = newWidth;
         this.newHeight = newHeight;
+        this.lastFilter = null;
+    }
+
+    myDrawImage() {
+        this.ctx.beginPath();
+        ctx.fillStyle = '#ffffff';
+        this.ctx.fillRect(this.posX - 5, this.posY - 5, this.newWidth + 10, this.newHeight + 10);
+        this.ctx.closePath();
+
         this.ctx.drawImage(this.img, this.posX, this.posY, this.newWidth, this.newHeight);
     }
 
@@ -20,6 +24,12 @@ class myImage {
 
         if (this.img.src == '') {
             return
+        }
+
+        this.myDrawImage();
+        if (this.lastFilter == filtro) {
+            this.lastFilter = null;
+            return;
         }
 
         let imageData = ctx.getImageData(this.posX, this.posY, this.newWidth, this.newHeight);
@@ -49,9 +59,11 @@ class myImage {
             default:
                 break;
         }
+        this.lastFilter = filtro;
 
         ctx.putImageData(imageData, this.posX, this.posY);
     }
+
 
     filterGrey(imageData) {
 
@@ -169,7 +181,6 @@ class myImage {
                 data[i + 1] = 0;
                 data[i + 2] = 0;
             }
-
             // if (data[i] > 124) {
             //     data[i] = 255; // red 
             // } else {
@@ -185,10 +196,6 @@ class myImage {
             // } else {
             //     data[i + 2] = 0; // red 
             // }
-
-
         }
-
     }
-
 }

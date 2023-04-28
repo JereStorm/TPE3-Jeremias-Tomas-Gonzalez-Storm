@@ -1,8 +1,6 @@
 /*-------------------------------------- GLOBALS ---------------------------------------------*/
 
 body{
-    font-family: 'Alfa Slab One', cursive;
-    font-family: 'Bebas Neue', cursive;
     font-family: 'Quicksand', sans-serif;
     background-color: rgb(21, 21, 21);
     color: azure;
@@ -31,7 +29,7 @@ button{
     cursor: pointer;
 }
 
-/*-------------------------------------- CLASES ---------------------------------------------*/
+/*-------------------------------------- NAVBAR ---------------------------------------------*/
 
 .menu{
     width: 100%;
@@ -40,24 +38,6 @@ button{
     flex-direction: row;
     gap: 100px;
     align-items: center;
-}
-.filters{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    align-items: center;
-    border-radius: 10px;
-    padding: 10px;
-}
-.filters button {
-    padding: 15px;
-    width: 120px;
-    transition: all .5s ease;
-}
-.filters button:hover{
-    background-color: black;
-    color: aliceblue;
-    border-bottom: 1px solid wheat;
 }
 .painter {
     display: flex;
@@ -85,12 +65,17 @@ button{
     width: 5rem;
     height: 3rem;
 }
+#range{
+    width: 150px;
+    background: rgb(0, 208, 197) !important;
+}
+/*------------------------------------------ CANVAS -----------------------------------------*/
 .canvas_container{
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-    align-items: start;
-    background-color: rgb(67, 67, 67);
+    align-items: center;
+    background-color: rgb(34, 34, 34);
     height: calc(100vh - 100px);
     width: 100%;
 }
@@ -98,14 +83,44 @@ button{
     border: 1px solid black;
     border-radius: 15px;
     margin: 10px;
+    height: 80vh;
+    width: 60vw;
+}
+.filters{
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    align-items: center;
+    border-radius: 10px;
+    padding: 10px;
+}
+.filters button {
+    padding: 15px;
+    font-family: 'Bebas Neue', cursive;
+    font-size: 20px;
+    border-radius: 5px;
+    width: 200px;
+    height: 40px;
+    margin: 20px 0px;
+    display: flex;
+    transform: rotate( 15deg);
+    justify-content: center;
+    align-items: center;
+    transition: all .5s ease;
 }
 
-#range{
-    width: 150px;
-    color: rgb(0, 208, 197) !important;
 
+.filters button:hover {
+    background-color: black;
+    color: aliceblue;
+    border-bottom: 1px solid wheat;
 }
-
-.data_container .menu .painter, .canvas_driver{
-    font-size: 3rem;
+.filters .filtro-selected{
+    transform: rotate(0deg);
+}
+    
+.filtro-selected{
+    background-color: rgb(43, 0, 67);
+    color: rgb(207, 233, 255);
+    border-bottom: 1px solid wheat;
 }
