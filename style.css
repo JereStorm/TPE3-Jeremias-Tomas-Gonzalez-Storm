@@ -40,9 +40,13 @@ button{
     align-items: center;
 }
 .painter {
+    position: absolute;
+    left: 30px;
     display: flex;
+    flex-direction: column;
     justify-content: center;
-    gap: 30px;
+    align-items: center;
+    gap: 20px;
     text-align: center;
     padding: 10px;
 }
@@ -73,7 +77,7 @@ button{
 .canvas_container{
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
     background-color: rgb(34, 34, 34);
     height: calc(100vh - 100px);
@@ -83,11 +87,11 @@ button{
     border: 1px solid black;
     border-radius: 15px;
     margin: 10px;
-    height: 80vh;
-    width: 60vw;
 }
 .filters{
     display: flex;
+    position: absolute;
+    right: 30px;
     flex-direction: column;
     gap: 30px;
     align-items: center;
@@ -99,16 +103,15 @@ button{
     font-family: 'Bebas Neue', cursive;
     font-size: 20px;
     border-radius: 5px;
-    width: 200px;
+    width: 140px;
     height: 40px;
-    margin: 20px 0px;
+    margin: 5px 0px;
     display: flex;
     transform: rotate( 15deg);
     justify-content: center;
     align-items: center;
     transition: all .5s ease;
 }
-
 
 .filters button:hover {
     background-color: black;

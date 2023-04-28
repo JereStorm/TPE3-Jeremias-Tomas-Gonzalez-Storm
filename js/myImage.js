@@ -128,17 +128,17 @@ class myImage {
             let bigger = Math.max(data[i], data[i + 1], data[i + 2]);
 
             if (bigger <= 245 && bigger == data[i]) {
-                data[i] += 10;
-                data[i + 1] -= 20;
-                data[i + 2] -= 20;
+                data[i] += 40;
+                data[i + 1] -= 40;
+                data[i + 2] -= 40;
             } else if (bigger <= 245 && bigger == data[i + 1]) {
-                data[i] -= 20;
-                data[i + 1] += 10;
-                data[i + 2] -= 20;
+                data[i] -= 40;
+                data[i + 1] += 40;
+                data[i + 2] -= 40;
             } else if (bigger <= 245 && bigger == data[i + 2]) {
-                data[i] -= 20;
-                data[i + 1] -= 20;
-                data[i + 2] += 10;
+                data[i] -= 40;
+                data[i + 1] -= 40;
+                data[i + 2] += 40;
             }
         }
 
@@ -172,7 +172,7 @@ class myImage {
         const data = imageData.data;
 
         for (let i = 0; i < data.length; i += 4) {
-            if ((data[i] + data[i + 1] + data[i + 2]) / 3 < 127) {
+            if ((data[i] + data[i + 1] + data[i + 2]) / 3 > 127) {
                 data[i] = 255;
                 data[i + 1] = 255;
                 data[i + 2] = 255;
