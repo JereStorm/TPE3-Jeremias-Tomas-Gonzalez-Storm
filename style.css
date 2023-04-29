@@ -31,14 +31,21 @@ button{
 
 /*-------------------------------------- NAVBAR ---------------------------------------------*/
 
+.data_container{
+    display: flex;
+    justify-content: space-between;
+}
+
 .menu{
     width: 100%;
     border-radius: 15px;
     display: flex;
+    justify-content: flex-end;
     flex-direction: row;
     gap: 100px;
     align-items: center;
 }
+
 .painter {
     position: absolute;
     left: 30px;
@@ -50,28 +57,71 @@ button{
     text-align: center;
     padding: 10px;
 }
+.painter article {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 .painter button {
     font-size: 1.5rem;
 }
 .canvas_driver{
     display: flex;
-    align-items:flex-start;
+    align-items:center;
+    justify-content: center;
     gap: 50px;
 }
 .selected{
-    background: aliceblue;
+    background: rgb(43, 0, 67);
     border: 2px solid rgb(0, 255, 242);
-    color:#3f3f3f;
+    color:rgb(0, 255, 242);
 }
 .color-selector{
-    background: rgb(0, 208, 197);
+    background: rgb(0, 255, 242);
     border-radius: 5px;
     width: 5rem;
     height: 3rem;
 }
 #range{
     width: 150px;
-    background: rgb(0, 208, 197) !important;
+}
+
+#reset{
+    padding: 15px;
+    font-family: 'Bebas Neue', cursive;
+    font-size: 20px;
+    border-radius: 5px;
+    width: 140px;
+    height: 40px;
+    background-color: rgb(0, 0, 0);
+    color: rgb(0, 208, 197);
+    margin: 5px 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all .5s ease;
+}
+#reset:hover{
+    background-color: rgb(207, 233, 255);
+    color: rgb(43, 0, 67);
+}
+
+#file_sl{
+    display: none;
+}
+.canvas_driver .file_sl{
+    font-family: Arial, Helvetica, sans-serif;
+    cursor: pointer;
+    border: 2px solid rgb(0, 208, 197);
+    background-color: rgb(0, 0, 0);
+    color: rgb(0, 208, 197);
+    padding: 10px;
+    border-radius: 3px;
+    transition: all .8s ease-out;
+}
+.canvas_driver .file_sl:hover {
+    background-color: rgb(207, 233, 255);
+    color: rgb(43, 0, 67);
 }
 /*------------------------------------------ CANVAS -----------------------------------------*/
 .canvas_container{
@@ -116,7 +166,7 @@ button{
 .filters button:hover {
     background-color: black;
     color: aliceblue;
-    border-bottom: 1px solid wheat;
+    border-bottom: 1px solid rgb(0, 255, 242);;
 }
 .filters .filtro-selected{
     transform: rotate(0deg);
@@ -125,5 +175,5 @@ button{
 .filtro-selected{
     background-color: rgb(43, 0, 67);
     color: rgb(207, 233, 255);
-    border-bottom: 1px solid wheat;
+    border: 1px solid rgb(0, 255, 242);;
 }

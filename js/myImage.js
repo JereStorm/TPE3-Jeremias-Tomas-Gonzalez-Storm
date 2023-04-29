@@ -13,7 +13,7 @@ class myImage {
 
     myDrawImage() {
         this.ctx.beginPath();
-        ctx.fillStyle = '#ffffff';
+        this.ctx.fillStyle = '#ffffff';
         this.ctx.fillRect(this.posX - 5, this.posY - 5, this.newWidth + 10, this.newHeight + 10);
         this.ctx.closePath();
 
@@ -172,7 +172,7 @@ class myImage {
         const data = imageData.data;
 
         for (let i = 0; i < data.length; i += 4) {
-            if ((data[i] + data[i + 1] + data[i + 2]) / 3 > 127) {
+            if ((data[i] + data[i + 1] + data[i + 2]) / 3 > 120) {
                 data[i] = 255;
                 data[i + 1] = 255;
                 data[i + 2] = 255;

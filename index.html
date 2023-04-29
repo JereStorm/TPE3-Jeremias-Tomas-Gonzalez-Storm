@@ -13,6 +13,8 @@
         rel="stylesheet">
     <!--Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css">
+
+
 </head>
 
 <body onload="main()" class="container">
@@ -21,12 +23,12 @@
         <h1>Trabajo Practico Entregable 3</h1>
 
         <div class="menu">
-
-
-
             <div class="canvas_driver">
+                <button id="save">Guardar</button>
                 <button id="reset">Blanquear</button>
+                <label class="file_sl" for="file_sl">Subir archivo</label>
                 <input type="file" name="image" id="file_sl">
+
             </div>
         </div>
     </header>
@@ -35,11 +37,12 @@
     <div class="canvas_container">
 
         <div class="painter">
-            <button id="pencil"><i class="bi bi-pencil"></i></button>
-            <input class="color-selector" type="color" oninput="setColor(this.value)" name="color-selector"
-                id="color-selector">
-            <button id="eraser"><i class="bi bi-eraser"></i></button>
-
+            <article>
+                <button id="pencil"><i class="bi bi-pencil"></i></button>
+                <input class="color-selector" type="color" oninput="setColor(this.value)" name="color-selector"
+                    id="color-selector">
+                <button id="eraser"><i class="bi bi-eraser"></i></button>
+            </article>
             <input type="range" oninput="setRange(this.value)" name="range" id="range" min="1" max="10" value="1">
         </div>
         <canvas id="canvas" width="800px" height="500px">

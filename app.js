@@ -6,8 +6,6 @@ const rect = canvas.getBoundingClientRect();
 
 const filters = document.querySelector('.filters').children;
 
-
-
 const width = canvas.width;
 const height = canvas.height;
 
@@ -19,13 +17,16 @@ const range_sl = document.getElementById("range");
 const file_sl = document.getElementById("file_sl");
 const img = new Image();
 
+document.getElementById("save").addEventListener("click", () => {
+    let link = document.createElement('a');
+    link.download = "canvas.png";
+    link.href = canvas.toDataURL();
+    link.click();
+});
+
 let myImg = null;
 let myPencil = null;
 let last_filter = '';
-
-
-let posX = 0;
-let posY = 0;
 
 let drawing = false;
 
@@ -40,29 +41,22 @@ for (let filtro of filters) {
     })
 };
 
-
 reset_btn.addEventListener('click', function () {
     file_sl.value = null;
     myImg = null;
     cleanCanvas();
+    cleanFilters();
+
 })
 
 file_sl.addEventListener('change', () => {
+    cleanFilters();
     img.src = URL.createObjectURL(file_sl.files[0]);
     img.onload = () => {
 
         // get the scale
         // it is the min of the 2 ratios
-        let scale_factor = Math.min(width / img.width, height / img.height);
-
-        // Lets get the new width and height based on the scale factor
-        let newWidth = img.width * scale_factor;
-        let newHeight = img.height * scale_factor;
-
-        // get the top left position of the image
-        // in order to center the image within the canvas
-        let x = (width / 2) - (newWidth / 2);
-        let y = (height / 2) - (newHeight / 2);
+        let { x, y, newWidth, newHeight } = adaptImage();
 
         // When drawing the image, we have to scale down the image
         // width and height in order to fit within the canvas
@@ -95,7 +89,6 @@ eraser_btn.addEventListener('click', () => {
 
 canvas.addEventListener("mousedown", function (e) {
     if (pencil_btn.classList.contains('selected') || eraser_btn.classList.contains('selected')) {
-        //Seteo las variables posX y posY con la posicion inicial del mouse al quere dibujar
         const { x, y } = getMousePos(e);
         drawing = true;
         myPencil = new Pencil(x, y, ctx, color, range, 'none');
@@ -118,6 +111,7 @@ canvas.addEventListener("mouseup", function (e) {
         myPencil = null;
     }
 })
+
 
 //---------------------------- FUNCIONES DEL DRAW ------------------------------------//
 
@@ -149,6 +143,7 @@ function setRange(g) {
     range = g;
 }
 
+
 function filtersDriver(filtro) {
     if (!file_sl.files[0]) {
         return
@@ -157,11 +152,7 @@ function filtersDriver(filtro) {
 
     filtro.classList.add('filtro-selected');
 
-    for (let otherFiltro of filters) {
-        if (otherFiltro.getAttribute('data-id') != filterName) {
-            otherFiltro.classList.remove('filtro-selected');
-        }
-    }
+    cleanFilters(filterName);
 
     if (filterName == last_filter) {
         filtro.classList.toggle('filtro-selected');
@@ -171,4 +162,26 @@ function filtersDriver(filtro) {
     }
 
     myImg.addFilter(filtro.getAttribute('data-id'));
+}
+
+function cleanFilters(filterName = 'null') {
+    for (let otherFiltro of filters) {
+        if (otherFiltro.getAttribute('data-id') != filterName) {
+            otherFiltro.classList.remove('filtro-selected');
+        }
+    }
+}
+
+function adaptImage() {
+    let scale_factor = Math.min(width / img.width, height / img.height);
+
+    // Lets get the new width and height based on the scale factor
+    let newWidth = img.width * scale_factor;
+    let newHeight = img.height * scale_factor;
+
+    // get the top left position of the image
+    // in order to center the image within the canvas
+    let x = (width / 2) - (newWidth / 2);
+    let y = (height / 2) - (newHeight / 2);
+    return { x, y, newWidth, newHeight };
 }
