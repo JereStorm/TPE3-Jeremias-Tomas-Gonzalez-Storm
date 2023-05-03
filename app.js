@@ -45,29 +45,13 @@ reset_btn.addEventListener('click', function () {
     file_sl.value = null;
     myImg = null;
     cleanCanvas();
-    cleanFilters();
+    cleanFiltersExcept();
 })
 
 file_sl.addEventListener('change', () => {
     cleanCanvas();
-    cleanFilters();
-    img.src = URL.createObjectURL(file_sl.files[0]);
-    img.onload = () => {
-        // get the scale
-        // it is the min of the 2 ratios
-        let { x, y, newWidth, newHeight } = adaptImage();
-
-        // When drawing the image, we have to scale down the image
-        // width and height in order to fit within the canvas
-
-        if (x > y) {
-            myImg = new myImage(img, ctx, width - newWidth - (x - y), height - newHeight, newWidth, newHeight);
-        } else {
-            myImg = new myImage(img, ctx, width - newWidth, height - newHeight - (y - x), newWidth, newHeight);
-        }
-
-        myImg.myDrawImage();
-    }
+    cleanFiltersExcept();
+    addImage();
 })
 
 pencil_btn.addEventListener('click', () => {
@@ -111,6 +95,7 @@ canvas.addEventListener("mouseup", function (e) {
     }
 })
 
+
 //---------------------------- FUNCIONES DEL DRAW ------------------------------------//
 
 function main() {
@@ -141,28 +126,71 @@ function setRange(g) {
     range = g;
 }
 
+function addImage() {
+    img.src = URL.createObjectURL(file_sl.files[0]);
+    img.onload = () => {
+        // get the scale
+        // it is the min of the 2 ratios
+        let { x, y, newWidth, newHeight } = adaptImage();
+
+        // When drawing the image, we have to scale down the image
+        // width and height in order to fit within the canvas
+        if (x > y) {
+            myImg = new myImage(img, ctx, width - newWidth - (x - y), height - newHeight, newWidth, newHeight);
+        } else {
+            myImg = new myImage(img, ctx, width - newWidth, height - newHeight - (y - x), newWidth, newHeight);
+        }
+
+        myImg.myDrawImage();
+    };
+}
+
 function filtersDriver(filtro) {
     if (!file_sl.files[0]) {
         return
     }
+    myImg.myDrawImage();
+
     let filterName = filtro.getAttribute('data-id');
 
     filtro.classList.add('filtro-selected');
 
-    cleanFilters(filterName);
+    cleanFiltersExcept(filterName);
 
-    if (filterName == last_filter) {
+    if (filterName == myImg.getLastFilter()) {
         filtro.classList.toggle('filtro-selected');
-        last_filter = null;
-    } else {
-        last_filter = filterName;
+        myImg.setLastFilter(null);
+        return
     }
-    cleanCanvas();
 
-    myImg.addFilter(filtro.getAttribute('data-id'));
+    switch (filterName) {
+        case 'binarization':
+            myImg.filterBinarization();
+            break;
+        case 'brightness':
+            myImg.filterBrightness();
+            break;
+        case 'invert':
+            myImg.filterInvert();
+            break;
+        case 'sepia':
+            myImg.filterSepia();
+            break;
+        case 'grey':
+            myImg.filterGrey();
+            break;
+        case 'saturation':
+            myImg.filterSaturation();
+            break;
+        case 'blur':
+            myImg.filterBlur();
+            break;
+        default:
+            break;
+    }
 }
 
-function cleanFilters(filterName = 'null') {
+function cleanFiltersExcept(filterName = 'null') {
     for (let otherFiltro of filters) {
         if (otherFiltro.getAttribute('data-id') != filterName) {
             otherFiltro.classList.remove('filtro-selected');

@@ -10,6 +10,12 @@ class myImage {
         this.newHeight = Math.round(newHeight);
         this.lastFilter = null;
     }
+    setLastFilter(newFilter) {
+        this.lastFilter = newFilter;
+    }
+    getLastFilter() {
+        return this.lastFilter;
+    }
 
     myDrawImage() {
         // this.ctx.beginPath();
@@ -20,52 +26,8 @@ class myImage {
         this.ctx.drawImage(this.img, this.posX, this.posY, this.newWidth, this.newHeight);
     }
 
-    addFilter(filtro) {
-
-        if (this.img.src == '') {
-            return
-        }
-
-        this.myDrawImage();
-
-        if (this.lastFilter == filtro) {
-            this.lastFilter = null;
-            return;
-        }
-
+    filterInvert() {
         let imageData = ctx.getImageData(this.posX, this.posY, this.newWidth, this.newHeight);
-
-        switch (filtro) {
-            case 'binarization':
-                this.filterBinarization(imageData);
-                break;
-            case 'brightness':
-                this.filterBrightness(imageData);
-                break;
-            case 'invert':
-                this.filterInvert(imageData);
-                break;
-            case 'sepia':
-                this.filterSepia(imageData);
-                break;
-            case 'grey':
-                this.filterGrey(imageData);
-                break;
-            case 'saturation':
-                this.filterSaturation(imageData);
-                break;
-            case 'blur':
-                this.filterBlur(imageData);
-                break;
-            default:
-                break;
-        }
-        this.lastFilter = filtro;
-
-        ctx.putImageData(imageData, this.posX, this.posY);
-    }
-
-    filterInvert(imageData) {
 
         const data = imageData.data;
 
@@ -74,9 +36,14 @@ class myImage {
             data[i + 1] = 255 - data[i + 1]; // green
             data[i + 2] = 255 - data[i + 2]; // blue
         }
+
+        ctx.putImageData(imageData, this.posX, this.posY);
+
+        this.setLastFilter('invert');
     }
 
-    filterSepia(imageData) {
+    filterSepia() {
+        let imageData = ctx.getImageData(this.posX, this.posY, this.newWidth, this.newHeight);
 
         const data = imageData.data;
 
@@ -86,9 +53,14 @@ class myImage {
             data[i + 1] = Math.min((data[i] * 0.349) + (data[i + 1] * 0.686) + (data[i + 2] * 0.168), 255); // green
             data[i + 2] = Math.min((data[i] * 0.272) + (data[i + 1] * 0.534) + (data[i + 2] * 0.131), 255); // blue
         }
+
+        ctx.putImageData(imageData, this.posX, this.posY);
+        this.setLastFilter('sepia');
+
     }
 
-    filterBrightness(imageData) {
+    filterBrightness() {
+        let imageData = ctx.getImageData(this.posX, this.posY, this.newWidth, this.newHeight);
 
         const data = imageData.data;
 
@@ -104,9 +76,13 @@ class myImage {
                 data[i + 2] = data[i + 2] + 14; // blue
             }
         }
+
+        ctx.putImageData(imageData, this.posX, this.posY);
+        this.setLastFilter('brightness');
     }
 
-    filterGrey(imageData) {
+    filterGrey() {
+        let imageData = ctx.getImageData(this.posX, this.posY, this.newWidth, this.newHeight);
 
         const data = imageData.data;
 
@@ -116,9 +92,14 @@ class myImage {
             data[i + 1] = gris; // green
             data[i + 2] = gris; // blue
         }
+
+        ctx.putImageData(imageData, this.posX, this.posY);
+        this.setLastFilter('grey');
+
     }
 
-    filterBinarization(imageData) {
+    filterBinarization() {
+        let imageData = ctx.getImageData(this.posX, this.posY, this.newWidth, this.newHeight);
 
         const data = imageData.data;
 
@@ -148,9 +129,12 @@ class myImage {
             //     data[i + 2] = 0; // red 
             // }
         }
+        ctx.putImageData(imageData, this.posX, this.posY);
+        this.setLastFilter('binarization');
     }
 
-    filterSaturation(imageData) {
+    filterSaturation() {
+        let imageData = ctx.getImageData(this.posX, this.posY, this.newWidth, this.newHeight);
 
         const data = imageData.data;
 
@@ -172,12 +156,15 @@ class myImage {
             }
         }
 
+        ctx.putImageData(imageData, this.posX, this.posY);
+        this.setLastFilter('saturation');
     }
 
     /*-- EN PROCESO:
         En este punto yo se que tendre una matriz de this.newWidth X this.newHeight = imageData;
     --*/
-    filterBlur(imageData) {
+    filterBlur() {
+        let imageData = ctx.getImageData(this.posX, this.posY, this.newWidth, this.newHeight);
 
         if (this.img.src == '') {
             return
@@ -201,29 +188,11 @@ class myImage {
         for (let x = 1; x < this.newWidth - 1; x++) {
             for (let y = 1; y < this.newHeight - 1; y++) {
 
-                let suma = imageData.data[((x - 1) * (y + 1)) * 4] + // Arriba a la izquierda
-                    imageData.data[((x + 0) * (y + 1)) * 4] + // Centro superior
-                    imageData.data[((x + 1) * (y + 1)) * 4] + // Arriba a la derecha
-                    imageData.data[((x - 1) * (y + 0)) * 4] + // Medio a la izquierda
-                    imageData.data[((x + 0) * (y + 0)) * 4] + // Píxel actual
-                    imageData.data[((x + 1) * (y + 0)) * 4] + // Medio a la derecha
-                    imageData.data[((x - 1) * (y - 1)) * 4] + // Baja izquierda
-                    imageData.data[((x + 0) * (y - 1)) * 4] + // Centro bajo
-                    imageData.data[((x + 1) * (y - 1)) * 4]; // Bajo a la derecha
 
-
-                imageData.data[((x - 1) * (y + 1)) * 4] = suma / 9;// Arriba a la izquierda
-                imageData.data[((x + 0) * (y + 1)) * 4] = suma / 9;// Centro superior
-                imageData.data[((x + 1) * (y + 1)) * 4] = suma / 9;// Arriba a la derecha
-                imageData.data[((x - 1) * (y + 0)) * 4] = suma / 9;// Medio a la izquierda
-                imageData.data[((x + 0) * (y + 0)) * 4] = suma / 9;// Píxel actual
-                imageData.data[((x + 1) * (y + 0)) * 4] = suma / 9;// Medio a la derecha
-                imageData.data[((x - 1) * (y - 1)) * 4] = suma / 9;// Baja izquierda
-                imageData.data[((x + 0) * (y - 1)) * 4] = suma / 9;// Centro bajo
-                imageData.data[((x + 1) * (y - 1)) * 4] = suma / 9;
             }
 
         }
+
     }
 
 }
