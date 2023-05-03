@@ -1,8 +1,19 @@
-/*-------------------------------------- GLOBALS ---------------------------------------------*/
-
+:root {
+    --fontP: "Quicksand", sans-serif;
+    --primary: rgb(24, 174, 179);
+    --secondary: rgb(65, 0, 101);
+    --light: rgb(204, 204, 204);
+    --light_dark: rgb(50, 50, 50);
+    --dark: rgb(21, 21, 21);
+  }  
+/*--------
+primary: rgb(0, 255, 242),
+lightdark: rgb(34, 34, 34)
+----------*/
+/*------------------------------ GLOBALS ---------------------------------------------*/
 body{
-    font-family: 'Quicksand', sans-serif;
-    background-color: rgb(21, 21, 21);
+    font-family: var(--fontP);
+    background-color: var(--dark);
     color: azure;
 }
 header{
@@ -10,21 +21,20 @@ header{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 2px solid black;
+    border-bottom: 2px solid rgb(17, 17, 17);
 }
 header h1{
     padding: 20px;
-    width: fit-content;
 }
 
 button{
     padding: 5px;
     border-radius: 10px;
     border:none;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid rgb(17, 17, 17);
     text-align: center;
-    background-color: rgb(0, 208, 197);
-    color: rgb(0, 0, 0);
+    background-color: var(--primary);
+    color: rgb(17, 17, 17);
     box-shadow: none;
     cursor: pointer;
 }
@@ -33,17 +43,74 @@ button{
 
 .data_container{
     display: flex;
-    justify-content: space-between;
 }
 
-.menu{
-    width: 100%;
-    border-radius: 15px;
+.canvas_driver{
     display: flex;
-    justify-content: flex-end;
-    flex-direction: row;
+    align-items:center;
+    justify-content: space-between;
     gap: 100px;
+}
+.canvas_driver div{
+    display: flex;
+    gap: 20px;
+}
+.canvas_driver label{
+    margin-right: 50px;
+}
+
+.canvas_driver .file_sl{
+    font-family: Arial, Helvetica, sans-serif;
+    cursor: pointer;
+    border: 2px solid var(--primary);
+    background-color: rgb(17, 17, 17);
+    color: var(--primary);
+    padding: 10px;
+    border-radius: 3px;
+    transition: all .8s ease-out;
+}
+.canvas_driver .file_sl:hover {
+    background-color: var(--light);
+    color: var(--dark);
+}
+
+#reset{
+    padding: 15px;
+    font-family: 'Bebas Neue', cursive;
+    font-size: 20px;
+    border-radius: 5px;
+    width: 140px;
+    height: 40px;
+    background-color: rgb(17, 17, 17);
+    color: var(--primary);
+    margin: 5px 0px;
+    display: flex;
+    justify-content: center;
     align-items: center;
+    transition: all .5s ease;
+}
+#reset:hover{
+    background-color: rgb(207, 233, 255);
+    color: var(--dark);
+}
+
+#file_sl{
+    display: none;
+}
+#save{
+    padding: 15px;
+    font-family: 'Bebas Neue', cursive;
+    font-size: 20px;
+    border-radius: 5px;
+    width: 140px;
+    height: 40px;
+    background-color: rgb(0, 0, 0);
+    color: var(--primary);
+    margin: 5px 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all .5s ease;
 }
 
 .painter {
@@ -65,76 +132,37 @@ button{
 .painter button {
     font-size: 1.5rem;
 }
-.canvas_driver{
-    display: flex;
-    align-items:center;
-    justify-content: center;
-    gap: 50px;
-}
+
 .selected{
-    background: rgb(43, 0, 67);
-    border: 2px solid rgb(0, 255, 242);
-    color:rgb(0, 255, 242);
+    background: var(--dark);
+    border: 2px solid var(--dark);
+    color:var(--primary);
 }
 .color-selector{
-    background: rgb(0, 255, 242);
+    background: var(--primary);
     border-radius: 5px;
     width: 5rem;
     height: 3rem;
 }
+
+
 #range{
     width: 150px;
 }
 
-#reset{
-    padding: 15px;
-    font-family: 'Bebas Neue', cursive;
-    font-size: 20px;
-    border-radius: 5px;
-    width: 140px;
-    height: 40px;
-    background-color: rgb(0, 0, 0);
-    color: rgb(0, 208, 197);
-    margin: 5px 0px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: all .5s ease;
-}
-#reset:hover{
-    background-color: rgb(207, 233, 255);
-    color: rgb(43, 0, 67);
-}
 
-#file_sl{
-    display: none;
-}
-.canvas_driver .file_sl{
-    font-family: Arial, Helvetica, sans-serif;
-    cursor: pointer;
-    border: 2px solid rgb(0, 208, 197);
-    background-color: rgb(0, 0, 0);
-    color: rgb(0, 208, 197);
-    padding: 10px;
-    border-radius: 3px;
-    transition: all .8s ease-out;
-}
-.canvas_driver .file_sl:hover {
-    background-color: rgb(207, 233, 255);
-    color: rgb(43, 0, 67);
-}
 /*------------------------------------------ CANVAS -----------------------------------------*/
 .canvas_container{
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    background-color: rgb(34, 34, 34);
+    background-color: var(--light_dark);
     height: calc(100vh - 100px);
     width: 100%;
 }
 #canvas{
-    border: 1px solid black;
+    border: 1px solid rgb(17, 17, 17);
     border-radius: 15px;
     margin: 10px;
 }
@@ -164,16 +192,16 @@ button{
 }
 
 .filters button:hover {
-    background-color: black;
+    background-color: rgb(17, 17, 17);
     color: aliceblue;
-    border-bottom: 1px solid rgb(0, 255, 242);;
+    border-bottom: 1px solid var(--primary);
 }
 .filters .filtro-selected{
     transform: rotate(0deg);
 }
     
 .filtro-selected{
-    background-color: rgb(43, 0, 67);
+    background-color: var(--secondary);
     color: rgb(207, 233, 255);
-    border: 1px solid rgb(0, 255, 242);;
+    border: 1px solid rgb(0, 255, 242);
 }

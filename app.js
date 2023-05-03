@@ -17,13 +17,6 @@ const range_sl = document.getElementById("range");
 const file_sl = document.getElementById("file_sl");
 const img = new Image();
 
-document.getElementById("save").addEventListener("click", () => {
-    let link = document.createElement('a');
-    link.download = "canvas.png";
-    link.href = canvas.toDataURL();
-    link.click();
-});
-
 let myImg = null;
 let myPencil = null;
 let last_filter = '';
@@ -34,6 +27,13 @@ let color = color_sl.value;
 let range = range_sl.value;
 
 //------------------------------- MANEJANDO EVENTOS ---------------------------------------//
+
+document.getElementById("save").addEventListener("click", () => {
+    let link = document.createElement('a');
+    link.download = "canvas.png";
+    link.href = canvas.toDataURL();
+    link.click();
+});
 
 for (let filtro of filters) {
     filtro.addEventListener('click', () => {
@@ -46,14 +46,13 @@ reset_btn.addEventListener('click', function () {
     myImg = null;
     cleanCanvas();
     cleanFilters();
-
 })
 
 file_sl.addEventListener('change', () => {
+    cleanCanvas();
     cleanFilters();
     img.src = URL.createObjectURL(file_sl.files[0]);
     img.onload = () => {
-
         // get the scale
         // it is the min of the 2 ratios
         let { x, y, newWidth, newHeight } = adaptImage();
@@ -112,7 +111,6 @@ canvas.addEventListener("mouseup", function (e) {
     }
 })
 
-
 //---------------------------- FUNCIONES DEL DRAW ------------------------------------//
 
 function main() {
@@ -143,7 +141,6 @@ function setRange(g) {
     range = g;
 }
 
-
 function filtersDriver(filtro) {
     if (!file_sl.files[0]) {
         return
@@ -160,6 +157,7 @@ function filtersDriver(filtro) {
     } else {
         last_filter = filterName;
     }
+    cleanCanvas();
 
     myImg.addFilter(filtro.getAttribute('data-id'));
 }
