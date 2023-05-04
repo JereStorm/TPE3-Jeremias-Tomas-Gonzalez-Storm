@@ -149,6 +149,7 @@ function filtersDriver(filtro) {
     if (!file_sl.files[0]) {
         return
     }
+
     myImg.myDrawImage();
 
     let filterName = filtro.getAttribute('data-id');

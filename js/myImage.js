@@ -113,21 +113,7 @@ class myImage {
                 data[i + 1] = 0;
                 data[i + 2] = 0;
             }
-            // if (data[i] > 124) {
-            //     data[i] = 255; // red 
-            // } else {
-            //     data[i] = 0; // red 
-            // }
-            // if (data[i + 1] > 124) {
-            //     data[i + 1] = 255; // red 
-            // } else {
-            //     data[i + 1] = 0; // red 
-            // }
-            // if (data[i + 2] > 124) {
-            //     data[i + 2] = 255; // red 
-            // } else {
-            //     data[i + 2] = 0; // red 
-            // }
+
         }
         ctx.putImageData(imageData, this.posX, this.posY);
         this.setLastFilter('binarization');
@@ -155,14 +141,27 @@ class myImage {
                 data[i + 2] += 40;
             }
         }
-
+        /**
+        if (data[i] > 124) {
+            data[i] = 255; // red 
+        } else {
+            data[i] = 0; // red 
+        }
+        if (data[i + 1] > 124) {
+            data[i + 1] = 255; // red 
+        } else {
+            data[i + 1] = 0; // red 
+        }
+        if (data[i + 2] > 124) {
+            data[i + 2] = 255; // red 
+        } else {
+            data[i + 2] = 0; // red 
+        }
+         */
         ctx.putImageData(imageData, this.posX, this.posY);
         this.setLastFilter('saturation');
     }
 
-    /*-- EN PROCESO:
-        En este punto yo se que tendre una matriz de this.newWidth X this.newHeight = imageData;
-    --*/
     filterBlur() {
         let imageData = ctx.getImageData(this.posX, this.posY, this.newWidth, this.newHeight);
 
@@ -176,7 +175,7 @@ class myImage {
             [1 / 9, 1 / 9, 1 / 9]
         ];
 
-        let gaussian_kernel = [
+        let box_kernel1 = [
             [1 / 256, 4 / 256, 6 / 256, 4 / 256, 1 / 256],
             [4 / 256, 16 / 256, 24 / 256, 16 / 256, 4 / 256],
             [6 / 256, 24 / 256, 36 / 256, 24 / 256, 6 / 256],
@@ -184,15 +183,30 @@ class myImage {
             [1 / 256, 4 / 256, 6 / 256, 4 / 256, 1 / 256]
         ];
 
+        let offSet = Math.floor(box_kernel.length / 2);
 
-        for (let x = 1; x < this.newWidth - 1; x++) {
-            for (let y = 1; y < this.newHeight - 1; y++) {
+        for (let x = offSet; x < this.newWidth - offSet; x++) {
+            for (let y = offSet; y < this.newHeight - offSet; y++) {
+                let acc = [0, 0, 0];
+                for (let a = 0; a < box_kernel.length; a++) {
+                    for (let b = 0; b < box_kernel.length; b++) {
+                        let xn = x + a - offSet;
+                        let yn = y + b - offSet;
 
+                        let pixel = (xn + yn * this.newWidth) * 4;
+
+                        acc[0] += imageData.data[pixel] * box_kernel[a][b];
+                        acc[1] += imageData.data[pixel + 1] * box_kernel[a][b];
+                        acc[2] += imageData.data[pixel + 2] * box_kernel[a][b];
+                    }
+                }
+                imageData.data[(x + y * this.newWidth) * 4] = acc[0];
+                imageData.data[(x + y * this.newWidth) * 4 + 1] = acc[1];
+                imageData.data[(x + y * this.newWidth) * 4 + 2] = acc[2];
 
             }
-
         }
-
+        ctx.putImageData(imageData, this.posX, this.posY);
+        this.setLastFilter('blur');
     }
-
 }
