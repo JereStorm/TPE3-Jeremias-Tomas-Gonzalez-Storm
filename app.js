@@ -103,7 +103,6 @@ canvas.addEventListener("mouseup", function (e) {
 
 function main() {
     cleanCanvas();
-    desactivateFilters();
 }
 
 function cleanCanvas() {
