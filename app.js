@@ -5,6 +5,7 @@ const ctx = canvas.getContext('2d');
 const rect = canvas.getBoundingClientRect();
 
 const filters = document.querySelector('.filters').children;
+desactivateFilters();
 
 const width = canvas.width;
 const height = canvas.height;
@@ -36,6 +37,7 @@ document.getElementById("save").addEventListener("click", () => {
 });
 
 for (let filtro of filters) {
+
     filtro.addEventListener('click', () => {
         filtersDriver(filtro);
     })
@@ -44,6 +46,7 @@ for (let filtro of filters) {
 reset_btn.addEventListener('click', function () {
     file_sl.value = null;
     myImg = null;
+    desactivateFilters();
     cleanCanvas();
     cleanFiltersExcept();
 })
@@ -100,6 +103,7 @@ canvas.addEventListener("mouseup", function (e) {
 
 function main() {
     cleanCanvas();
+    desactivateFilters();
 }
 
 function cleanCanvas() {
@@ -127,22 +131,27 @@ function setRange(g) {
 }
 
 function addImage() {
-    img.src = URL.createObjectURL(file_sl.files[0]);
-    img.onload = () => {
-        // get the scale
-        // it is the min of the 2 ratios
-        let { x, y, newWidth, newHeight } = adaptImage();
+    try {
+        img.src = URL.createObjectURL(file_sl.files[0]);
+        img.onload = () => {
+            // get the scale
+            // it is the min of the 2 ratios
+            let { x, y, newWidth, newHeight } = adaptImage();
 
-        // When drawing the image, we have to scale down the image
-        // width and height in order to fit within the canvas
-        if (x > y) {
-            myImg = new myImage(img, ctx, width - newWidth - (x - y), height - newHeight, newWidth, newHeight);
-        } else {
-            myImg = new myImage(img, ctx, width - newWidth, height - newHeight - (y - x), newWidth, newHeight);
-        }
+            // When drawing the image, we have to scale down the image
+            // width and height in order to fit within the canvas
+            if (x > y) {
+                myImg = new myImage(img, ctx, width - newWidth - (x - y), height - newHeight, newWidth, newHeight);
+            } else {
+                myImg = new myImage(img, ctx, width - newWidth, height - newHeight - (y - x), newWidth, newHeight);
+            }
 
-        myImg.myDrawImage();
-    };
+            myImg.myDrawImage();
+            activateFilters();
+        };
+    } catch (error) {
+        desactivateFilters();
+    }
 }
 
 function filtersDriver(filtro) {
@@ -196,6 +205,19 @@ function cleanFiltersExcept(filterName = 'null') {
         if (otherFiltro.getAttribute('data-id') != filterName) {
             otherFiltro.classList.remove('filtro-selected');
         }
+    }
+}
+
+function activateFilters() {
+    for (let filtro of filters) {
+        filtro.disabled = false;
+        filtro.classList.remove('disabled');
+    }
+}
+function desactivateFilters() {
+    for (let filtro of filters) {
+        filtro.disabled = true;
+        filtro.classList.add('disabled');
     }
 }
 

@@ -205,3 +205,10 @@ button{
     color: rgb(207, 233, 255);
     border: 1px solid rgb(0, 255, 242);
 }
+
+.disabled{
+    background-color: gray;
+    text-decoration: line-through;
+    cursor: default;
+    transition: none;
+}

@@ -18,10 +18,10 @@ class myImage {
     }
 
     myDrawImage() {
-        // this.ctx.beginPath();
-        // this.ctx.fillStyle = '#ffffff';
-        // this.ctx.fillRect(this.posX - 5, this.posY - 5, this.newWidth + 10, this.newHeight + 10);
-        // this.ctx.closePath();
+        this.ctx.beginPath();
+        this.ctx.fillStyle = '#ffffff';
+        this.ctx.fillRect(this.posX - 5, this.posY - 5, this.newWidth + 10, this.newHeight + 10);
+        this.ctx.closePath();
 
         this.ctx.drawImage(this.img, this.posX, this.posY, this.newWidth, this.newHeight);
     }
