@@ -127,32 +127,32 @@ class myImage {
         for (let i = 0; i < data.length; i += 4) {
             let bigger = Math.max(data[i], data[i + 1], data[i + 2]);
 
-            if (bigger <= 245 && bigger == data[i]) {
+            if (bigger <= 215 && bigger == data[i]) {
                 data[i] += 40;
                 data[i + 1] -= 40;
                 data[i + 2] -= 40;
-            } else if (bigger <= 245 && bigger == data[i + 1]) {
+            } else if (bigger <= 215 && bigger == data[i + 1]) {
                 data[i] -= 40;
                 data[i + 1] += 40;
                 data[i + 2] -= 40;
-            } else if (bigger <= 245 && bigger == data[i + 2]) {
+            } else if (bigger <= 215 && bigger == data[i + 2]) {
                 data[i] -= 40;
                 data[i + 1] -= 40;
                 data[i + 2] += 40;
             }
         }
         /**
-        if (data[i] > 124) {
+        if (data[i] > 127) {
             data[i] = 255; // red 
         } else {
             data[i] = 0; // red 
         }
-        if (data[i + 1] > 124) {
+        if (data[i + 1] > 127) {
             data[i + 1] = 255; // red 
         } else {
             data[i + 1] = 0; // red 
         }
-        if (data[i + 2] > 124) {
+        if (data[i + 2] > 127) {
             data[i + 2] = 255; // red 
         } else {
             data[i + 2] = 0; // red 
@@ -169,11 +169,13 @@ class myImage {
             return
         }
 
-        let box_kernel1 = [
+        let box_kernel2 = [
             [1 / 9, 1 / 9, 1 / 9],
             [1 / 9, 1 / 9, 1 / 9],
             [1 / 9, 1 / 9, 1 / 9]
         ];
+
+
 
         let box_kernel = [
             [1 / 256, 4 / 256, 6 / 256, 4 / 256, 1 / 256],
@@ -203,10 +205,120 @@ class myImage {
                 imageData.data[(x + y * this.newWidth) * 4] = acc[0];
                 imageData.data[(x + y * this.newWidth) * 4 + 1] = acc[1];
                 imageData.data[(x + y * this.newWidth) * 4 + 2] = acc[2];
-
             }
         }
         ctx.putImageData(imageData, this.posX, this.posY);
         this.setLastFilter('blur');
     }
+
+    filterEdgeDetection() {
+        let imageData = ctx.getImageData(this.posX, this.posY, this.newWidth, this.newHeight);
+
+        if (this.img.src == '') {
+            return
+        }
+
+
+        let kernelX = [[-1, 0, 1],
+        [-2, 0, 2],
+        [-1, 0, 1]];
+
+        let kernelY = [[-1, -2, -1],
+        [0, 0, 0],
+        [1, 2, 1]];
+
+        let offSet = 1;
+
+        for (let x = offSet; x < this.newWidth - offSet; x++) {
+            for (let y = offSet; y < this.newHeight - offSet; y++) {
+                let magX = 0;
+                let magY = 0;
+                for (let a = 0; a < 3; a++) {
+                    for (let b = 0; b < 3; b++) {
+                        let xn = x + a;
+                        let yn = y + b;
+
+                        let intensity = this.calcIntensity(imageData, xn, yn);
+
+                        magX += intensity * kernelX[a][b];
+                        magY += intensity * kernelY[a][b];
+                    }
+                }
+                let color = parseInt(Math.sqrt((magX * magX)) + Math.sqrt((magY * magY)));
+                imageData.data[((x + y * this.newWidth) * 4)] = color;
+                imageData.data[((x + y * this.newWidth) * 4) + 1] = color;
+                imageData.data[((x + y * this.newWidth) * 4) + 2] = color;
+
+            }
+        }
+        ctx.putImageData(imageData, this.posX, this.posY);
+        this.setLastFilter('edgeDetection');
+    }
+    filterEdgeDetection1() {
+        let imageData = ctx.getImageData(this.posX, this.posY, this.newWidth, this.newHeight);
+
+        if (this.img.src == '') {
+            return
+        }
+
+        let kernelX = [[-1, 0, 1],
+        [-2, 0, 2],
+        [-1, 0, 1]];
+
+        let kernelY = [[-1, -2, -1],
+        [0, 0, 0],
+        [1, 2, 1]];
+
+        let offSet = 1;
+
+        for (let x = offSet; x < this.newWidth - offSet; x++) {
+            for (let y = offSet; y < this.newHeight - offSet; y++) {
+                let magX = 0;
+                let magY = 0;
+                for (let a = 0; a < 3; a++) {
+                    for (let b = 0; b < 3; b++) {
+                        let xn = x + a;
+                        let yn = y + b;
+
+                        let intensity = parseInt(this.calcIntensity(imageData, xn, yn));
+
+                        magX += intensity * kernelX[a][b];
+                        magY += intensity * kernelY[a][b];
+                    }
+                }
+                let color = parseInt(Math.sqrt((magX * magX)) + Math.sqrt((magY * magY)));
+                imageData.data[((x + y * this.newWidth) * 4)] = color;
+                imageData.data[((x + y * this.newWidth) * 4) + 1] = color;
+                imageData.data[((x + y * this.newWidth) * 4) + 2] = color;
+
+            }
+        }
+        ctx.putImageData(imageData, this.posX, this.posY);
+        this.setLastFilter('edgeDetection');
+    }
+
+    calcIntensity(imageData, xn, yn) {
+        return (
+            (imageData.data[((xn + yn * this.newWidth) * 4)] +
+                imageData.data[((xn + yn * this.newWidth) * 4) + 1] +
+                imageData.data[((xn + yn * this.newWidth) * 4) + 2]) / 3
+        );
+    }
 }
+
+
+
+
+/*FILTROS FALOPAS:
+        let deteccion_bordes = [
+            [-1, -1, -1],
+            [-1, 8, -1],
+            [-1, -1, -1]
+        ];
+
+imageData.data[(x + y * this.newWidth) * 4] = (acc[2] + 255) / 2;
+imageData.data[(x + y * this.newWidth) * 4 + 1] = (acc[0] + 255) / 2;
+imageData.data[(x + y * this.newWidth) * 4 + 2] = (acc[1] + 255) / 2;
+imageData.data[(x + y * this.newWidth) * 4 + 3] = 255;
+
+*/

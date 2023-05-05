@@ -5,7 +5,6 @@ const ctx = canvas.getContext('2d');
 const rect = canvas.getBoundingClientRect();
 
 const filters = document.querySelector('.filters').children;
-desactivateFilters();
 
 const width = canvas.width;
 const height = canvas.height;
@@ -20,7 +19,6 @@ const img = new Image();
 
 let myImg = null;
 let myPencil = null;
-let last_filter = '';
 
 let drawing = false;
 
@@ -193,6 +191,9 @@ function filtersDriver(filtro) {
             break;
         case 'blur':
             myImg.filterBlur();
+            break;
+        case 'edgeDetection':
+            myImg.filterEdgeDetection();
             break;
         default:
             break;
