@@ -177,7 +177,7 @@ button{
     padding: 10px;
 }
 .filters button {
-    padding: 15px;
+    padding: 30px 10px;
     font-family: 'Bebas Neue', cursive;
     font-size: 20px;
     border-radius: 5px;

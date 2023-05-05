@@ -218,7 +218,6 @@ class myImage {
             return
         }
 
-
         let kernelX = [[-1, 0, 1],
         [-2, 0, 2],
         [-1, 0, 1]];
@@ -244,7 +243,7 @@ class myImage {
                         magY += intensity * kernelY[a][b];
                     }
                 }
-                let color = parseInt(Math.sqrt((magX * magX)) + Math.sqrt((magY * magY)));
+                let color = parseInt(Math.sqrt((magX * magX) + (magY * magY)));
                 imageData.data[((x + y * this.newWidth) * 4)] = color;
                 imageData.data[((x + y * this.newWidth) * 4) + 1] = color;
                 imageData.data[((x + y * this.newWidth) * 4) + 2] = color;
@@ -254,49 +253,6 @@ class myImage {
         ctx.putImageData(imageData, this.posX, this.posY);
         this.setLastFilter('edgeDetection');
     }
-    filterEdgeDetection1() {
-        let imageData = ctx.getImageData(this.posX, this.posY, this.newWidth, this.newHeight);
-
-        if (this.img.src == '') {
-            return
-        }
-
-        let kernelX = [[-1, 0, 1],
-        [-2, 0, 2],
-        [-1, 0, 1]];
-
-        let kernelY = [[-1, -2, -1],
-        [0, 0, 0],
-        [1, 2, 1]];
-
-        let offSet = 1;
-
-        for (let x = offSet; x < this.newWidth - offSet; x++) {
-            for (let y = offSet; y < this.newHeight - offSet; y++) {
-                let magX = 0;
-                let magY = 0;
-                for (let a = 0; a < 3; a++) {
-                    for (let b = 0; b < 3; b++) {
-                        let xn = x + a;
-                        let yn = y + b;
-
-                        let intensity = parseInt(this.calcIntensity(imageData, xn, yn));
-
-                        magX += intensity * kernelX[a][b];
-                        magY += intensity * kernelY[a][b];
-                    }
-                }
-                let color = parseInt(Math.sqrt((magX * magX)) + Math.sqrt((magY * magY)));
-                imageData.data[((x + y * this.newWidth) * 4)] = color;
-                imageData.data[((x + y * this.newWidth) * 4) + 1] = color;
-                imageData.data[((x + y * this.newWidth) * 4) + 2] = color;
-
-            }
-        }
-        ctx.putImageData(imageData, this.posX, this.posY);
-        this.setLastFilter('edgeDetection');
-    }
-
     calcIntensity(imageData, xn, yn) {
         return (
             (imageData.data[((xn + yn * this.newWidth) * 4)] +
