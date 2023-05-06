@@ -1,7 +1,8 @@
 
 class myImage {
 
-    constructor(img, context, posX, posY, newWidth, newHeight) {
+    constructor(canvas, img, context, posX, posY, newWidth, newHeight) {
+        this.canvas = canvas;
         this.img = img;
         this.ctx = context;
         this.posX = posX;
@@ -17,6 +18,29 @@ class myImage {
         return this.lastFilter;
     }
 
+    moveTo(x, y) {
+        this.posX = x;
+        this.posY = y;
+    };
+
+    estaElPunto(x, y) {
+        return ((x > this.posX) && (x < this.posX + this.newWidth) && (y > this.posY) && (y < this.posY + this.newHeight));
+    }
+
+    zoomIn() {
+        this.newWidth += Math.round(this.newWidth / 20);
+        this.newHeight += Math.round(this.newHeight / 20);
+
+        this.myDrawImage();
+    }
+
+    zoomOut() {
+        this.newWidth -= Math.round(this.newWidth / 20);
+        this.newHeight -= Math.round(this.newHeight / 20);
+
+        this.myDrawImage();
+    }
+
     myDrawImage() {
         this.ctx.beginPath();
         this.ctx.fillStyle = '#ffffff';
@@ -24,6 +48,37 @@ class myImage {
         this.ctx.closePath();
 
         this.ctx.drawImage(this.img, this.posX, this.posY, this.newWidth, this.newHeight);
+
+        // if (this.lastFilter != null) {
+        //     switch (this.lastFilter) {
+        //         case 'binarization':
+        //             this.filterBinarization();
+        //             break;
+        //         case 'brightness':
+        //             this.filterBrightness();
+        //             break;
+        //         case 'invert':
+        //             this.filterInvert();
+        //             break;
+        //         case 'sepia':
+        //             this.filterSepia();
+        //             break;
+        //         case 'grey':
+        //             this.filterGrey();
+        //             break;
+        //         case 'saturation':
+        //             this.filterSaturation();
+        //             break;
+        //         case 'blur':
+        //             this.filterBlur();
+        //             break;
+        //         case 'edgeDetection':
+        //             this.filterEdgeDetection();
+        //             break;
+        //         default:
+        //             break;
+        //     }
+        // }
     }
 
     filterInvert() {
@@ -163,7 +218,12 @@ class myImage {
     }
 
     filterBlur() {
-        let imageData = ctx.getImageData(this.posX, this.posY, this.newWidth, this.newHeight);
+        let validW = this.newWidth > this.canvas.width ? this.canvas.width : this.newWidth;
+        validW = Math.round(validW);
+        let validH = this.newHeight > this.canvas.height ? this.canvas.height : this.newHeight;
+        validH = Math.round(validH);
+
+        let imageData = ctx.getImageData(this.posX, this.posY, validW, validH);
 
         if (this.img.src == '') {
             return
@@ -175,8 +235,6 @@ class myImage {
             [1 / 9, 1 / 9, 1 / 9]
         ];
 
-
-
         let box_kernel = [
             [1 / 256, 4 / 256, 6 / 256, 4 / 256, 1 / 256],
             [4 / 256, 16 / 256, 24 / 256, 16 / 256, 4 / 256],
@@ -187,24 +245,24 @@ class myImage {
 
         let offSet = Math.floor(box_kernel.length / 2);
 
-        for (let x = offSet; x < this.newWidth - offSet; x++) {
-            for (let y = offSet; y < this.newHeight - offSet; y++) {
+        for (let x = offSet; x < validW - offSet; x++) {
+            for (let y = offSet; y < validH - offSet; y++) {
                 let acc = [0, 0, 0];
                 for (let a = 0; a < box_kernel.length; a++) {
                     for (let b = 0; b < box_kernel.length; b++) {
                         let xn = x + a - offSet;
                         let yn = y + b - offSet;
 
-                        let pixel = (xn + yn * this.newWidth) * 4;
+                        let pixel = (xn + yn * validW) * 4;
 
                         acc[0] += imageData.data[pixel] * box_kernel[a][b];
                         acc[1] += imageData.data[pixel + 1] * box_kernel[a][b];
                         acc[2] += imageData.data[pixel + 2] * box_kernel[a][b];
                     }
                 }
-                imageData.data[(x + y * this.newWidth) * 4] = acc[0];
-                imageData.data[(x + y * this.newWidth) * 4 + 1] = acc[1];
-                imageData.data[(x + y * this.newWidth) * 4 + 2] = acc[2];
+                imageData.data[(x + y * validW) * 4] = acc[0];
+                imageData.data[(x + y * validW) * 4 + 1] = acc[1];
+                imageData.data[(x + y * validW) * 4 + 2] = acc[2];
             }
         }
         ctx.putImageData(imageData, this.posX, this.posY);
@@ -212,7 +270,12 @@ class myImage {
     }
 
     filterEdgeDetection() {
-        let imageData = ctx.getImageData(this.posX, this.posY, this.newWidth, this.newHeight);
+        /*Primero debo obtener la parte valida de la imagen */
+        let validW = this.newWidth > this.canvas.width ? this.canvas.width : this.newWidth;
+        validW = Math.round(validW);
+        let validH = this.newHeight > this.canvas.height ? this.canvas.height : this.newHeight;
+        validH = Math.round(validH);
+        let imageData = ctx.getImageData(this.posX, this.posY, validW, validH);
 
         if (this.img.src == '') {
             return
@@ -226,10 +289,8 @@ class myImage {
         [0, 0, 0],
         [1, 2, 1]];
 
-        let offSet = 1;
-
-        for (let x = offSet; x < this.newWidth - offSet; x++) {
-            for (let y = offSet; y < this.newHeight - offSet; y++) {
+        for (let x = 0; x < validW; x++) {
+            for (let y = 0; y < validH; y++) {
                 let magX = 0;
                 let magY = 0;
                 for (let a = 0; a < 3; a++) {
@@ -237,27 +298,27 @@ class myImage {
                         let xn = x + a;
                         let yn = y + b;
 
-                        let intensity = this.calcIntensity(imageData, xn, yn);
+                        let intensity = this.calcIntensity(imageData, xn, yn, validW);
 
                         magX += intensity * kernelX[a][b];
                         magY += intensity * kernelY[a][b];
                     }
                 }
                 let color = parseInt(Math.sqrt((magX * magX) + (magY * magY)));
-                imageData.data[((x + y * this.newWidth) * 4)] = color;
-                imageData.data[((x + y * this.newWidth) * 4) + 1] = color;
-                imageData.data[((x + y * this.newWidth) * 4) + 2] = color;
+                imageData.data[((x + y * validW) * 4)] = color;
+                imageData.data[((x + y * validW) * 4) + 1] = color;
+                imageData.data[((x + y * validW) * 4) + 2] = color;
 
             }
         }
         ctx.putImageData(imageData, this.posX, this.posY);
         this.setLastFilter('edgeDetection');
     }
-    calcIntensity(imageData, xn, yn) {
+    calcIntensity(imageData, xn, yn, validW) {
         return (
-            (imageData.data[((xn + yn * this.newWidth) * 4)] +
-                imageData.data[((xn + yn * this.newWidth) * 4) + 1] +
-                imageData.data[((xn + yn * this.newWidth) * 4) + 2]) / 3
+            (imageData.data[((xn + yn * validW) * 4)] +
+                imageData.data[((xn + yn * validW) * 4) + 1] +
+                imageData.data[((xn + yn * validW) * 4) + 2]) / 3
         );
     }
 }

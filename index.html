@@ -17,18 +17,18 @@
 
 </head>
 
-<body onload="main()" class="container">
+<body class="container">
 
     <header class="data_container">
         <h1>Trabajo Practico Entregable 3</h1>
 
         <div class="canvas_driver">
             <div>
-                <button id="save">Guardar</button>
-                <button id="reset">Blanquear</button>
+                <button id="save">Descargar</button>
+                <button id="reset">Reiniciar</button>
             </div>
             <div>
-                <label class="file_sl" for="file_sl">Subir archivo</label>
+                <label class="file_sl" for="file_sl">Empezar con una Imagen</label>
                 <input type="file" name="image" id="file_sl">
             </div>
         </div>
@@ -44,7 +44,11 @@
                     id="color-selector">
                 <button id="eraser"><i class="bi bi-eraser"></i></button>
             </article>
-            <input type="range" oninput="setRange(this.value)" name="range" id="range" min="1" max="10" value="1">
+            <article>
+                <button id="zoomIn"><i class="bi bi-zoom-in"></i></button>
+                <button id="zoomOut"><i class="bi bi-zoom-out"></i></button>
+            </article>
+            <input type="range" oninput="setRange(this.value)" name="range" id="range" min="1" max="100" value="1">
         </div>
         <canvas id="canvas" width="800px" height="500px">
 

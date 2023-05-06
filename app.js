@@ -1,5 +1,4 @@
 "use strict"
-
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext('2d');
 const rect = canvas.getBoundingClientRect();
@@ -15,12 +14,16 @@ const eraser_btn = document.getElementById("eraser");
 const color_sl = document.getElementById("color-selector");
 const range_sl = document.getElementById("range");
 const file_sl = document.getElementById("file_sl");
+const zoomIn = document.getElementById("zoomIn");
+const zoomOut = document.getElementById("zoomOut");
+
 const img = new Image();
 
 let myImg = null;
 let myPencil = null;
 
 let drawing = false;
+let draging = false;
 
 let color = color_sl.value;
 let range = range_sl.value;
@@ -32,6 +35,21 @@ document.getElementById("save").addEventListener("click", () => {
     link.download = "canvas.png";
     link.href = canvas.toDataURL();
     link.click();
+});
+
+zoomIn.addEventListener("click", () => {
+    if (!myImg) {
+        return
+    }
+    cleanCanvas();
+    myImg.zoomIn();
+});
+zoomOut.addEventListener("click", () => {
+    if (!myImg) {
+        return
+    }
+    cleanCanvas();
+    myImg.zoomOut();
 });
 
 for (let filtro of filters) {
@@ -72,13 +90,20 @@ eraser_btn.addEventListener('click', () => {
 })
 
 canvas.addEventListener("mousedown", function (e) {
+    const { x, y } = getMousePos(e);
+    // console.log(x, y, myImg.estaElPunto(x, y), myImg.posX, myImg.posY);
     if (pencil_btn.classList.contains('selected') || eraser_btn.classList.contains('selected')) {
-        const { x, y } = getMousePos(e);
+
         drawing = true;
         myPencil = new Pencil(x, y, ctx, color, range, 'none');
+        myPencil.draw();
+    } else if (myImg.src != '' && myImg.estaElPunto(x, y)) {
+        draging = true;
     }
 
 })
+
+
 
 canvas.addEventListener("mousemove", function (evt) {
     //Si esta dibujando...
@@ -86,6 +111,10 @@ canvas.addEventListener("mousemove", function (evt) {
         //Paso por parametros las nuevas posiciones a dibujar
         myPencil.moveTo(evt.clientX - rect.left, evt.clientY - rect.top);
         myPencil.draw();
+    } else if (draging) {
+        cleanCanvas();
+        myImg.moveTo(evt.clientX - rect.left - myImg.newWidth / 2, evt.clientY - rect.top - myImg.newHeight / 2);
+        myImg.myDrawImage();
     }
 });
 
@@ -93,6 +122,8 @@ canvas.addEventListener("mouseup", function (e) {
     if (drawing) {
         drawing = false;
         myPencil = null;
+    } else if (draging) {
+        draging = false;
     }
 })
 
@@ -138,9 +169,9 @@ function addImage() {
             // When drawing the image, we have to scale down the image
             // width and height in order to fit within the canvas
             if (x > y) {
-                myImg = new myImage(img, ctx, width - newWidth - (x - y), height - newHeight, newWidth, newHeight);
+                myImg = new myImage(canvas, img, ctx, width - newWidth - (x - y), height - newHeight, newWidth, newHeight);
             } else {
-                myImg = new myImage(img, ctx, width - newWidth, height - newHeight - (y - x), newWidth, newHeight);
+                myImg = new myImage(canvas, img, ctx, width - newWidth, height - newHeight - (y - x), newWidth, newHeight);
             }
 
             myImg.myDrawImage();
@@ -234,3 +265,5 @@ function adaptImage() {
     let y = (height / 2) - (newHeight / 2);
     return { x, y, newWidth, newHeight };
 }
+
+main();
