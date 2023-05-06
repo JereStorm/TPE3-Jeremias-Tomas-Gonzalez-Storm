@@ -7,8 +7,10 @@ class myImage {
         this.ctx = context;
         this.posX = posX;
         this.posY = posY;
-        this.newWidth = Math.round(newWidth);
-        this.newHeight = Math.round(newHeight);
+        this.width = Math.round(newWidth);
+        this.height = Math.round(newHeight);
+        this.originalData = null;
+        this.actualData = null;
         this.lastFilter = null;
     }
     setLastFilter(newFilter) {
@@ -24,19 +26,19 @@ class myImage {
     };
 
     estaElPunto(x, y) {
-        return ((x > this.posX) && (x < this.posX + this.newWidth) && (y > this.posY) && (y < this.posY + this.newHeight));
+        return ((x > this.posX) && (x < this.posX + this.width) && (y > this.posY) && (y < this.posY + this.height));
     }
 
     zoomIn() {
-        this.newWidth += Math.round(this.newWidth / 20);
-        this.newHeight += Math.round(this.newHeight / 20);
+        this.width += Math.round(this.width / 20);
+        this.height += Math.round(this.height / 20);
 
         this.myDrawImage();
     }
 
     zoomOut() {
-        this.newWidth -= Math.round(this.newWidth / 20);
-        this.newHeight -= Math.round(this.newHeight / 20);
+        this.width -= Math.round(this.width / 20);
+        this.height -= Math.round(this.height / 20);
 
         this.myDrawImage();
     }
@@ -44,45 +46,16 @@ class myImage {
     myDrawImage() {
         this.ctx.beginPath();
         this.ctx.fillStyle = '#ffffff';
-        this.ctx.fillRect(this.posX - 5, this.posY - 5, this.newWidth + 10, this.newHeight + 10);
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.closePath();
 
-        this.ctx.drawImage(this.img, this.posX, this.posY, this.newWidth, this.newHeight);
+        this.ctx.drawImage(this.img, this.posX, this.posY, this.width, this.height);
 
-        // if (this.lastFilter != null) {
-        //     switch (this.lastFilter) {
-        //         case 'binarization':
-        //             this.filterBinarization();
-        //             break;
-        //         case 'brightness':
-        //             this.filterBrightness();
-        //             break;
-        //         case 'invert':
-        //             this.filterInvert();
-        //             break;
-        //         case 'sepia':
-        //             this.filterSepia();
-        //             break;
-        //         case 'grey':
-        //             this.filterGrey();
-        //             break;
-        //         case 'saturation':
-        //             this.filterSaturation();
-        //             break;
-        //         case 'blur':
-        //             this.filterBlur();
-        //             break;
-        //         case 'edgeDetection':
-        //             this.filterEdgeDetection();
-        //             break;
-        //         default:
-        //             break;
-        //     }
-        // }
     }
 
     filterInvert() {
-        let imageData = ctx.getImageData(this.posX, this.posY, this.newWidth, this.newHeight);
+        let imageData = ctx.getImageData(this.posX, this.posY, this.width, this.height);
+
 
         const data = imageData.data;
 
@@ -92,13 +65,13 @@ class myImage {
             data[i + 2] = 255 - data[i + 2]; // blue
         }
 
-        ctx.putImageData(imageData, this.posX, this.posY);
-
+        this.ctx.putImageData(imageData, this.posX, this.posY);
         this.setLastFilter('invert');
     }
 
     filterSepia() {
-        let imageData = ctx.getImageData(this.posX, this.posY, this.newWidth, this.newHeight);
+        let imageData = ctx.getImageData(this.posX, this.posY, this.width, this.height);
+
 
         const data = imageData.data;
 
@@ -109,13 +82,14 @@ class myImage {
             data[i + 2] = Math.min((data[i] * 0.272) + (data[i + 1] * 0.534) + (data[i + 2] * 0.131), 255); // blue
         }
 
-        ctx.putImageData(imageData, this.posX, this.posY);
+        this.ctx.putImageData(imageData, this.posX, this.posY);
         this.setLastFilter('sepia');
 
     }
 
     filterBrightness() {
-        let imageData = ctx.getImageData(this.posX, this.posY, this.newWidth, this.newHeight);
+        let imageData = ctx.getImageData(this.posX, this.posY, this.width, this.height);
+
 
         const data = imageData.data;
 
@@ -132,12 +106,13 @@ class myImage {
             }
         }
 
-        ctx.putImageData(imageData, this.posX, this.posY);
+        this.ctx.putImageData(imageData, this.posX, this.posY);
         this.setLastFilter('brightness');
     }
 
     filterGrey() {
-        let imageData = ctx.getImageData(this.posX, this.posY, this.newWidth, this.newHeight);
+        let imageData = ctx.getImageData(this.posX, this.posY, this.width, this.height);
+
 
         const data = imageData.data;
 
@@ -148,13 +123,13 @@ class myImage {
             data[i + 2] = gris; // blue
         }
 
-        ctx.putImageData(imageData, this.posX, this.posY);
+        this.ctx.putImageData(imageData, this.posX, this.posY);
         this.setLastFilter('grey');
 
     }
 
     filterBinarization() {
-        let imageData = ctx.getImageData(this.posX, this.posY, this.newWidth, this.newHeight);
+        let imageData = ctx.getImageData(this.posX, this.posY, this.width, this.height);
 
         const data = imageData.data;
 
@@ -170,12 +145,12 @@ class myImage {
             }
 
         }
-        ctx.putImageData(imageData, this.posX, this.posY);
+        this.ctx.putImageData(imageData, this.posX, this.posY);
         this.setLastFilter('binarization');
     }
 
     filterSaturation() {
-        let imageData = ctx.getImageData(this.posX, this.posY, this.newWidth, this.newHeight);
+        let imageData = ctx.getImageData(this.posX, this.posY, this.width, this.height);
 
         const data = imageData.data;
 
@@ -213,21 +188,20 @@ class myImage {
             data[i + 2] = 0; // red 
         }
          */
-        ctx.putImageData(imageData, this.posX, this.posY);
+        this.ctx.putImageData(imageData, this.posX, this.posY);
         this.setLastFilter('saturation');
     }
 
     filterBlur() {
-        let validW = this.newWidth > this.canvas.width ? this.canvas.width : this.newWidth;
-        validW = Math.round(validW);
-        let validH = this.newHeight > this.canvas.height ? this.canvas.height : this.newHeight;
-        validH = Math.round(validH);
-
-        let imageData = ctx.getImageData(this.posX, this.posY, validW, validH);
 
         if (this.img.src == '') {
             return
         }
+
+        let validW = this.width;
+        let validH = this.height;
+
+        let imageData = ctx.getImageData(this.posX, this.posY, validW, validH);
 
         let box_kernel2 = [
             [1 / 9, 1 / 9, 1 / 9],
@@ -265,21 +239,20 @@ class myImage {
                 imageData.data[(x + y * validW) * 4 + 2] = acc[2];
             }
         }
-        ctx.putImageData(imageData, this.posX, this.posY);
+        this.ctx.putImageData(imageData, this.posX, this.posY);
         this.setLastFilter('blur');
     }
 
     filterEdgeDetection() {
-        /*Primero debo obtener la parte valida de la imagen */
-        let validW = this.newWidth > this.canvas.width ? this.canvas.width : this.newWidth;
-        validW = Math.round(validW);
-        let validH = this.newHeight > this.canvas.height ? this.canvas.height : this.newHeight;
-        validH = Math.round(validH);
-        let imageData = ctx.getImageData(this.posX, this.posY, validW, validH);
 
         if (this.img.src == '') {
             return
         }
+
+        /*Primero debo obtener la parte valida de la imagen */
+        let validW = this.width;
+        let validH = this.height;
+        let imageData = ctx.getImageData(this.posX, this.posY, validW, validH);
 
         let kernelX = [[-1, 0, 1],
         [-2, 0, 2],
@@ -311,7 +284,7 @@ class myImage {
 
             }
         }
-        ctx.putImageData(imageData, this.posX, this.posY);
+        this.ctx.putImageData(imageData, this.posX, this.posY);
         this.setLastFilter('edgeDetection');
     }
     calcIntensity(imageData, xn, yn, validW) {

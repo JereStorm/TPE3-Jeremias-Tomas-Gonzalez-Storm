@@ -43,6 +43,8 @@ zoomIn.addEventListener("click", () => {
     }
     cleanCanvas();
     myImg.zoomIn();
+    if (myImg.getLastFilter())
+        applyFilterByName(myImg.getLastFilter());
 });
 zoomOut.addEventListener("click", () => {
     if (!myImg) {
@@ -50,6 +52,8 @@ zoomOut.addEventListener("click", () => {
     }
     cleanCanvas();
     myImg.zoomOut();
+    if (myImg.getLastFilter())
+        applyFilterByName(myImg.getLastFilter());
 });
 
 for (let filtro of filters) {
@@ -93,17 +97,17 @@ canvas.addEventListener("mousedown", function (e) {
     const { x, y } = getMousePos(e);
     // console.log(x, y, myImg.estaElPunto(x, y), myImg.posX, myImg.posY);
     if (pencil_btn.classList.contains('selected') || eraser_btn.classList.contains('selected')) {
-
         drawing = true;
         myPencil = new Pencil(x, y, ctx, color, range, 'none');
         myPencil.draw();
     } else if (myImg.src != '' && myImg.estaElPunto(x, y)) {
         draging = true;
+        desactivateFilters();
+        myImg.moveTo(e.clientX - rect.left - myImg.width / 2, e.clientY - rect.top - myImg.height / 2);
+        myImg.myDrawImage();
     }
 
 })
-
-
 
 canvas.addEventListener("mousemove", function (evt) {
     //Si esta dibujando...
@@ -112,8 +116,8 @@ canvas.addEventListener("mousemove", function (evt) {
         myPencil.moveTo(evt.clientX - rect.left, evt.clientY - rect.top);
         myPencil.draw();
     } else if (draging) {
-        cleanCanvas();
-        myImg.moveTo(evt.clientX - rect.left - myImg.newWidth / 2, evt.clientY - rect.top - myImg.newHeight / 2);
+        // cleanCanvas();
+        myImg.moveTo(evt.clientX - rect.left - myImg.width / 2, evt.clientY - rect.top - myImg.height / 2);
         myImg.myDrawImage();
     }
 });
@@ -124,6 +128,9 @@ canvas.addEventListener("mouseup", function (e) {
         myPencil = null;
     } else if (draging) {
         draging = false;
+        activateFilters();
+        if (myImg.getLastFilter())
+            applyFilterByName(myImg.getLastFilter());
     }
 })
 
@@ -182,25 +189,31 @@ function addImage() {
     }
 }
 
-function filtersDriver(filtro) {
+function filtersDriver(filtroNodeHTML) {
     if (!file_sl.files[0]) {
         return
     }
 
     myImg.myDrawImage();
 
-    let filterName = filtro.getAttribute('data-id');
+    let filterName = filtroNodeHTML.getAttribute('data-id');
 
-    filtro.classList.add('filtro-selected');
+    filtroNodeHTML.classList.add('filtro-selected');
 
     cleanFiltersExcept(filterName);
 
     if (filterName == myImg.getLastFilter()) {
-        filtro.classList.toggle('filtro-selected');
+        filtroNodeHTML.classList.toggle('filtro-selected');
         myImg.setLastFilter(null);
+        myImg.myDrawImage();
         return
     }
 
+    applyFilterByName(filterName);
+
+}
+
+function applyFilterByName(filterName) {
     switch (filterName) {
         case 'binarization':
             myImg.filterBinarization();

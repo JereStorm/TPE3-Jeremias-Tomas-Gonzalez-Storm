@@ -116,6 +116,7 @@ button{
 .painter {
     position: absolute;
     left: 30px;
+    top: 100px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -170,13 +171,13 @@ button{
     display: flex;
     position: absolute;
     overflow-y: scroll;
-    height: 70vh;
+    height: 50vh;
     right: 30px;
     flex-direction: column;
     gap: 30px;
     align-items: center;
     border-radius: 10px;
-    padding: 10px;
+    padding: 30px;
 }
 .filters::-webkit-scrollbar {
     width: 10px;               /* width of the entire scrollbar */
