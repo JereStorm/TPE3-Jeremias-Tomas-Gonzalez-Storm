@@ -25,20 +25,29 @@ class myImage {
         this.posY = y;
     };
 
+    drawImageData() {
+        this.ctx.beginPath();
+        this.ctx.fillStyle = '#ffffff';
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.closePath();
+
+        this.ctx.putImageData(this.actualData ? this.actualData : this.originalData, this.posX, this.posY);
+    }
+
     estaElPunto(x, y) {
         return ((x > this.posX) && (x < this.posX + this.width) && (y > this.posY) && (y < this.posY + this.height));
     }
 
     zoomIn() {
-        this.width += Math.round(this.width / 20);
-        this.height += Math.round(this.height / 20);
+        this.width += Math.round(this.width / 4);
+        this.height += Math.round(this.height / 4);
 
         this.myDrawImage();
     }
 
     zoomOut() {
-        this.width -= Math.round(this.width / 20);
-        this.height -= Math.round(this.height / 20);
+        this.width -= Math.round(this.width / 4);
+        this.height -= Math.round(this.height / 4);
 
         this.myDrawImage();
     }
@@ -51,6 +60,7 @@ class myImage {
 
         this.ctx.drawImage(this.img, this.posX, this.posY, this.width, this.height);
 
+        this.originalData = this.ctx.getImageData(this.posX, this.posY, this.width, this.height);
     }
 
     filterInvert() {
@@ -66,6 +76,7 @@ class myImage {
         }
 
         this.ctx.putImageData(imageData, this.posX, this.posY);
+        this.actualData = imageData;
         this.setLastFilter('invert');
     }
 
@@ -83,6 +94,7 @@ class myImage {
         }
 
         this.ctx.putImageData(imageData, this.posX, this.posY);
+        this.actualData = imageData;
         this.setLastFilter('sepia');
 
     }
@@ -107,6 +119,7 @@ class myImage {
         }
 
         this.ctx.putImageData(imageData, this.posX, this.posY);
+        this.actualData = imageData;
         this.setLastFilter('brightness');
     }
 
@@ -124,6 +137,7 @@ class myImage {
         }
 
         this.ctx.putImageData(imageData, this.posX, this.posY);
+        this.actualData = imageData;
         this.setLastFilter('grey');
 
     }
@@ -146,6 +160,7 @@ class myImage {
 
         }
         this.ctx.putImageData(imageData, this.posX, this.posY);
+        this.actualData = imageData;
         this.setLastFilter('binarization');
     }
 
@@ -171,24 +186,9 @@ class myImage {
                 data[i + 2] += 40;
             }
         }
-        /**
-        if (data[i] > 127) {
-            data[i] = 255; // red 
-        } else {
-            data[i] = 0; // red 
-        }
-        if (data[i + 1] > 127) {
-            data[i + 1] = 255; // red 
-        } else {
-            data[i + 1] = 0; // red 
-        }
-        if (data[i + 2] > 127) {
-            data[i + 2] = 255; // red 
-        } else {
-            data[i + 2] = 0; // red 
-        }
-         */
+
         this.ctx.putImageData(imageData, this.posX, this.posY);
+        this.actualData = imageData;
         this.setLastFilter('saturation');
     }
 
@@ -240,6 +240,7 @@ class myImage {
             }
         }
         this.ctx.putImageData(imageData, this.posX, this.posY);
+        this.actualData = imageData;
         this.setLastFilter('blur');
     }
 
@@ -285,6 +286,7 @@ class myImage {
             }
         }
         this.ctx.putImageData(imageData, this.posX, this.posY);
+        this.actualData = imageData;
         this.setLastFilter('edgeDetection');
     }
     calcIntensity(imageData, xn, yn, validW) {

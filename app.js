@@ -19,6 +19,8 @@ const zoomOut = document.getElementById("zoomOut");
 
 const img = new Image();
 
+let filterHelper = new FilterHelper(filters);
+
 let myImg = null;
 let myPencil = null;
 
@@ -68,12 +70,12 @@ reset_btn.addEventListener('click', function () {
     myImg = null;
     desactivateFilters();
     cleanCanvas();
-    cleanFiltersExcept();
+    filterHelper.cleanFiltersExcept();
 })
 
 file_sl.addEventListener('change', () => {
     cleanCanvas();
-    cleanFiltersExcept();
+    filterHelper.cleanFiltersExcept();
     addImage();
 })
 
@@ -95,15 +97,14 @@ eraser_btn.addEventListener('click', () => {
 
 canvas.addEventListener("mousedown", function (e) {
     const { x, y } = getMousePos(e);
-    // console.log(x, y, myImg.estaElPunto(x, y), myImg.posX, myImg.posY);
     if (pencil_btn.classList.contains('selected') || eraser_btn.classList.contains('selected')) {
         drawing = true;
         myPencil = new Pencil(x, y, ctx, color, range, 'none');
         myPencil.draw();
     } else if (myImg.src != '' && myImg.estaElPunto(x, y)) {
         draging = true;
-        desactivateFilters();
-        myImg.moveTo(e.clientX - rect.left - myImg.width / 2, e.clientY - rect.top - myImg.height / 2);
+        filterHelper.desactivateFilters();
+        myImg.moveTo(x - myImg.width / 2, y - myImg.height / 2);
         myImg.myDrawImage();
     }
 
@@ -128,7 +129,7 @@ canvas.addEventListener("mouseup", function (e) {
         myPencil = null;
     } else if (draging) {
         draging = false;
-        activateFilters();
+        filterHelper.activateFilters();
         if (myImg.getLastFilter())
             applyFilterByName(myImg.getLastFilter());
     }
@@ -137,10 +138,7 @@ canvas.addEventListener("mouseup", function (e) {
 
 //---------------------------- FUNCIONES DEL DRAW ------------------------------------//
 
-function main() {
-    cleanCanvas();
-}
-
+cleanCanvas();
 function cleanCanvas() {
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, width, height);
@@ -169,12 +167,8 @@ function addImage() {
     try {
         img.src = URL.createObjectURL(file_sl.files[0]);
         img.onload = () => {
-            // get the scale
-            // it is the min of the 2 ratios
             let { x, y, newWidth, newHeight } = adaptImage();
 
-            // When drawing the image, we have to scale down the image
-            // width and height in order to fit within the canvas
             if (x > y) {
                 myImg = new myImage(canvas, img, ctx, width - newWidth - (x - y), height - newHeight, newWidth, newHeight);
             } else {
@@ -182,11 +176,24 @@ function addImage() {
             }
 
             myImg.myDrawImage();
-            activateFilters();
+            filterHelper.activateFilters();
         };
     } catch (error) {
-        desactivateFilters();
+        filterHelper.desactivateFilters();
     }
+}
+
+function adaptImage() {
+    let scale_factor = Math.min(width / img.width, height / img.height);
+    // Lets get the new width and height based on the scale factor
+    let newWidth = img.width * scale_factor;
+    let newHeight = img.height * scale_factor;
+    // get the top left position of the image
+    // in order to center the image within the canvas
+    let x = (width / 2) - (newWidth / 2);
+    let y = (height / 2) - (newHeight / 2);
+
+    return { x, y, newWidth, newHeight };
 }
 
 function filtersDriver(filtroNodeHTML) {
@@ -198,12 +205,12 @@ function filtersDriver(filtroNodeHTML) {
 
     let filterName = filtroNodeHTML.getAttribute('data-id');
 
-    filtroNodeHTML.classList.add('filtro-selected');
+    filtroNodeHTML.classList.add(filterHelper.styles.selected);
 
-    cleanFiltersExcept(filterName);
+    filterHelper.cleanFiltersExcept(filterName);
 
     if (filterName == myImg.getLastFilter()) {
-        filtroNodeHTML.classList.toggle('filtro-selected');
+        filtroNodeHTML.classList.toggle(filterHelper.styles.selected);
         myImg.setLastFilter(null);
         myImg.myDrawImage();
         return
@@ -244,39 +251,5 @@ function applyFilterByName(filterName) {
     }
 }
 
-function cleanFiltersExcept(filterName = 'null') {
-    for (let otherFiltro of filters) {
-        if (otherFiltro.getAttribute('data-id') != filterName) {
-            otherFiltro.classList.remove('filtro-selected');
-        }
-    }
-}
 
-function activateFilters() {
-    for (let filtro of filters) {
-        filtro.disabled = false;
-        filtro.classList.remove('disabled');
-    }
-}
-function desactivateFilters() {
-    for (let filtro of filters) {
-        filtro.disabled = true;
-        filtro.classList.add('disabled');
-    }
-}
 
-function adaptImage() {
-    let scale_factor = Math.min(width / img.width, height / img.height);
-
-    // Lets get the new width and height based on the scale factor
-    let newWidth = img.width * scale_factor;
-    let newHeight = img.height * scale_factor;
-
-    // get the top left position of the image
-    // in order to center the image within the canvas
-    let x = (width / 2) - (newWidth / 2);
-    let y = (height / 2) - (newHeight / 2);
-    return { x, y, newWidth, newHeight };
-}
-
-main();
