@@ -82,7 +82,7 @@ canvas.addEventListener("mousedown", function (e) {
         myPencil.draw();
     } else if (myImg.src != '' && myImg.estaElPunto(x, y)) {
         draging = true;
-        canvas.style.cursor = 'pointer';
+        canvas.style.cursor = 'move';
         filterHelper.desactivateFilters();
         console.log(x, y)
         myImg.moveTo(x - myImg.width / 2, y - myImg.height / 2);
@@ -94,9 +94,9 @@ canvas.addEventListener("mousedown", function (e) {
 canvas.addEventListener("mousemove", function (evt) {
     const { x, y } = getMousePos(evt);
 
-    if (myImg) {
-        if (!draging && myImg.estaElPunto(x, y)) {
-            canvas.style.cursor = 'move';
+    if (!pencil_btn.classList.contains('selected') && !eraser_btn.classList.contains('selected')) {
+        if (myImg && !draging && myImg.estaElPunto(x, y)) {
+            canvas.style.cursor = 'pointer';
         } else if (!draging) {
             canvas.style.cursor = 'default';
         }
@@ -110,6 +110,8 @@ canvas.addEventListener("mousemove", function (evt) {
     } else if (draging) {
         myImg.moveTo(x - myImg.width / 2, y - myImg.height / 2);
     }
+
+
 });
 
 canvas.addEventListener("mouseup", function (e) {
@@ -118,7 +120,7 @@ canvas.addEventListener("mouseup", function (e) {
         myPencil = null;
     } else if (draging) {
         draging = false;
-        document.body.style.cursor = 'default';
+        canvas.style.cursor = 'default';
         filterHelper.activateFilters();
     }
 })
