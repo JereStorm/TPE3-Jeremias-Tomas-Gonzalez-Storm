@@ -23,7 +23,16 @@ class myImage {
     moveTo(x, y) {
         this.posX = x;
         this.posY = y;
+        this.drawImageData();
     };
+
+    resetActualData() {
+        this.actualData = new ImageData(
+            new Uint8ClampedArray(this.originalData.data),
+            this.originalData.width,
+            this.originalData.height
+        )
+    }
 
     drawImageData() {
         this.ctx.beginPath();
@@ -38,20 +47,6 @@ class myImage {
         return ((x > this.posX) && (x < this.posX + this.width) && (y > this.posY) && (y < this.posY + this.height));
     }
 
-    zoomIn() {
-        this.width += Math.round(this.width / 4);
-        this.height += Math.round(this.height / 4);
-
-        this.myDrawImage();
-    }
-
-    zoomOut() {
-        this.width -= Math.round(this.width / 4);
-        this.height -= Math.round(this.height / 4);
-
-        this.myDrawImage();
-    }
-
     myDrawImage() {
         this.ctx.beginPath();
         this.ctx.fillStyle = '#ffffff';
@@ -60,11 +55,20 @@ class myImage {
 
         this.ctx.drawImage(this.img, this.posX, this.posY, this.width, this.height);
 
-        this.originalData = this.ctx.getImageData(this.posX, this.posY, this.width, this.height);
+        if (!this.originalData) {
+            this.originalData = this.ctx.getImageData(this.posX, this.posY, this.width, this.height);
+            console.log(this.posX, this.posY, this.width, this.height)
+        }
     }
 
     filterInvert() {
-        let imageData = ctx.getImageData(this.posX, this.posY, this.width, this.height);
+
+
+        let imageData = new ImageData(
+            new Uint8ClampedArray(this.originalData.data),
+            this.originalData.width,
+            this.originalData.height
+        )
 
 
         const data = imageData.data;
@@ -81,8 +85,11 @@ class myImage {
     }
 
     filterSepia() {
-        let imageData = ctx.getImageData(this.posX, this.posY, this.width, this.height);
-
+        let imageData = new ImageData(
+            new Uint8ClampedArray(this.originalData.data),
+            this.originalData.width,
+            this.originalData.height
+        )
 
         const data = imageData.data;
 
@@ -100,7 +107,11 @@ class myImage {
     }
 
     filterBrightness() {
-        let imageData = ctx.getImageData(this.posX, this.posY, this.width, this.height);
+        let imageData = new ImageData(
+            new Uint8ClampedArray(this.originalData.data),
+            this.originalData.width,
+            this.originalData.height
+        )
 
 
         const data = imageData.data;
@@ -124,7 +135,11 @@ class myImage {
     }
 
     filterGrey() {
-        let imageData = ctx.getImageData(this.posX, this.posY, this.width, this.height);
+        let imageData = new ImageData(
+            new Uint8ClampedArray(this.originalData.data),
+            this.originalData.width,
+            this.originalData.height
+        )
 
 
         const data = imageData.data;
@@ -143,7 +158,11 @@ class myImage {
     }
 
     filterBinarization() {
-        let imageData = ctx.getImageData(this.posX, this.posY, this.width, this.height);
+        let imageData = new ImageData(
+            new Uint8ClampedArray(this.originalData.data),
+            this.originalData.width,
+            this.originalData.height
+        )
 
         const data = imageData.data;
 
@@ -165,7 +184,11 @@ class myImage {
     }
 
     filterSaturation() {
-        let imageData = ctx.getImageData(this.posX, this.posY, this.width, this.height);
+        let imageData = new ImageData(
+            new Uint8ClampedArray(this.originalData.data),
+            this.originalData.width,
+            this.originalData.height
+        )
 
         const data = imageData.data;
 
@@ -198,10 +221,16 @@ class myImage {
             return
         }
 
-        let validW = this.width;
-        let validH = this.height;
 
-        let imageData = ctx.getImageData(this.posX, this.posY, validW, validH);
+
+        let imageData = new ImageData(
+            new Uint8ClampedArray(this.originalData.data),
+            this.originalData.width,
+            this.originalData.height
+        )
+
+        let validW = imageData.width;
+        let validH = imageData.height;
 
         let box_kernel2 = [
             [1 / 9, 1 / 9, 1 / 9],
@@ -250,10 +279,14 @@ class myImage {
             return
         }
 
-        /*Primero debo obtener la parte valida de la imagen */
-        let validW = this.width;
-        let validH = this.height;
-        let imageData = ctx.getImageData(this.posX, this.posY, validW, validH);
+        let imageData = new ImageData(
+            new Uint8ClampedArray(this.originalData.data),
+            this.originalData.width,
+            this.originalData.height
+        )
+
+        let validW = imageData.width;
+        let validH = imageData.height;
 
         let kernelX = [[-1, 0, 1],
         [-2, 0, 2],

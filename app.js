@@ -14,8 +14,6 @@ const eraser_btn = document.getElementById("eraser");
 const color_sl = document.getElementById("color-selector");
 const range_sl = document.getElementById("range");
 const file_sl = document.getElementById("file_sl");
-const zoomIn = document.getElementById("zoomIn");
-const zoomOut = document.getElementById("zoomOut");
 
 const img = new Image();
 
@@ -39,25 +37,6 @@ document.getElementById("save").addEventListener("click", () => {
     link.click();
 });
 
-zoomIn.addEventListener("click", () => {
-    if (!myImg) {
-        return
-    }
-    cleanCanvas();
-    myImg.zoomIn();
-    if (myImg.getLastFilter())
-        applyFilterByName(myImg.getLastFilter());
-});
-zoomOut.addEventListener("click", () => {
-    if (!myImg) {
-        return
-    }
-    cleanCanvas();
-    myImg.zoomOut();
-    if (myImg.getLastFilter())
-        applyFilterByName(myImg.getLastFilter());
-});
-
 for (let filtro of filters) {
 
     filtro.addEventListener('click', () => {
@@ -68,7 +47,7 @@ for (let filtro of filters) {
 reset_btn.addEventListener('click', function () {
     file_sl.value = null;
     myImg = null;
-    desactivateFilters();
+    filterHelper.desactivateFilters();
     cleanCanvas();
     filterHelper.cleanFiltersExcept();
 })
@@ -103,23 +82,33 @@ canvas.addEventListener("mousedown", function (e) {
         myPencil.draw();
     } else if (myImg.src != '' && myImg.estaElPunto(x, y)) {
         draging = true;
+        canvas.style.cursor = 'pointer';
         filterHelper.desactivateFilters();
+        console.log(x, y)
         myImg.moveTo(x - myImg.width / 2, y - myImg.height / 2);
-        myImg.myDrawImage();
+        // myImg.myDrawImage();
     }
 
 })
 
 canvas.addEventListener("mousemove", function (evt) {
+    const { x, y } = getMousePos(evt);
+
+    if (myImg) {
+        if (!draging && myImg.estaElPunto(x, y)) {
+            canvas.style.cursor = 'move';
+        } else if (!draging) {
+            canvas.style.cursor = 'default';
+        }
+    }
+
     //Si esta dibujando...
     if (drawing) {
         //Paso por parametros las nuevas posiciones a dibujar
-        myPencil.moveTo(evt.clientX - rect.left, evt.clientY - rect.top);
+        myPencil.moveTo(x, y);
         myPencil.draw();
     } else if (draging) {
-        // cleanCanvas();
-        myImg.moveTo(evt.clientX - rect.left - myImg.width / 2, evt.clientY - rect.top - myImg.height / 2);
-        myImg.myDrawImage();
+        myImg.moveTo(x - myImg.width / 2, y - myImg.height / 2);
     }
 });
 
@@ -129,9 +118,8 @@ canvas.addEventListener("mouseup", function (e) {
         myPencil = null;
     } else if (draging) {
         draging = false;
+        document.body.style.cursor = 'default';
         filterHelper.activateFilters();
-        if (myImg.getLastFilter())
-            applyFilterByName(myImg.getLastFilter());
     }
 })
 
@@ -169,10 +157,13 @@ function addImage() {
         img.onload = () => {
             let { x, y, newWidth, newHeight } = adaptImage();
 
+            let centerX = Math.round(width - newWidth - (x - y));
+            let centerY = Math.round(height - newHeight - (y - x));
+
             if (x > y) {
-                myImg = new myImage(canvas, img, ctx, width - newWidth - (x - y), height - newHeight, newWidth, newHeight);
+                myImg = new myImage(canvas, img, ctx, centerX, height - newHeight, newWidth, newHeight);
             } else {
-                myImg = new myImage(canvas, img, ctx, width - newWidth, height - newHeight - (y - x), newWidth, newHeight);
+                myImg = new myImage(canvas, img, ctx, width - newWidth, centerY, newWidth, newHeight);
             }
 
             myImg.myDrawImage();
@@ -201,8 +192,6 @@ function filtersDriver(filtroNodeHTML) {
         return
     }
 
-    myImg.myDrawImage();
-
     let filterName = filtroNodeHTML.getAttribute('data-id');
 
     filtroNodeHTML.classList.add(filterHelper.styles.selected);
@@ -212,7 +201,8 @@ function filtersDriver(filtroNodeHTML) {
     if (filterName == myImg.getLastFilter()) {
         filtroNodeHTML.classList.toggle(filterHelper.styles.selected);
         myImg.setLastFilter(null);
-        myImg.myDrawImage();
+        myImg.resetActualData();
+        myImg.drawImageData();
         return
     }
 
