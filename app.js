@@ -14,6 +14,7 @@ const eraser_btn = document.getElementById("eraser");
 const color_sl = document.getElementById("color-selector");
 const range_sl = document.getElementById("range");
 const file_sl = document.getElementById("file_sl");
+const saveData_btn = document.getElementById("saveData");
 
 const img = new Image();
 
@@ -40,9 +41,19 @@ document.getElementById("save").addEventListener("click", () => {
 for (let filtro of filters) {
 
     filtro.addEventListener('click', () => {
+        saveData_btn.disabled = false;
+        saveData_btn.classList.remove(filterHelper.styles.disabled);
         filtersDriver(filtro);
     })
 };
+
+saveData_btn.addEventListener('click', () => {
+    myImg.updateOriginalData();
+    myImg.setLastFilter(null);
+    filterHelper.cleanFiltersExcept();
+    saveData_btn.classList.add('disabled');
+    saveData_btn.disabled = true;
+})
 
 reset_btn.addEventListener('click', function () {
     file_sl.value = null;
@@ -153,6 +164,21 @@ function setRange(g) {
     range = g;
 }
 
+function saveDataImage() {
+    let flag = false;
+
+    for (let filtro of filters) {
+        if (filtro.classList.contains(filterHelper.selected)) {
+            flag = true;
+        }
+    }
+
+    if (flag) {
+        myImg.updateOriginalData();
+        filterHelper.cleanFiltersExcept();
+    }
+}
+
 function addImage() {
     try {
         img.src = URL.createObjectURL(file_sl.files[0]);
@@ -205,6 +231,8 @@ function filtersDriver(filtroNodeHTML) {
         myImg.setLastFilter(null);
         myImg.resetActualData();
         myImg.drawImageData();
+        saveData_btn.disabled = true;
+        saveData_btn.classList.add(filterHelper.styles.disabled);
         return
     }
 

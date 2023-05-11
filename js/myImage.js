@@ -5,8 +5,8 @@ class myImage {
         this.canvas = canvas;
         this.img = img;
         this.ctx = context;
-        this.posX = posX;
-        this.posY = posY;
+        this.posX = Math.round(posX);
+        this.posY = Math.round(posY);
         this.width = Math.round(newWidth);
         this.height = Math.round(newHeight);
         this.originalData = null;
@@ -21,10 +21,14 @@ class myImage {
     }
 
     moveTo(x, y) {
-        this.posX = x;
-        this.posY = y;
+        this.posX = Math.round(x);
+        this.posY = Math.round(y);
         this.drawImageData();
     };
+
+    updateOriginalData() {
+        this.originalData = this.actualData;
+    }
 
     resetActualData() {
         this.actualData = new ImageData(
