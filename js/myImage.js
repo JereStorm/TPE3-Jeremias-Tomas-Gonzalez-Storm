@@ -61,7 +61,6 @@ class myImage {
 
         if (!this.originalData) {
             this.originalData = this.ctx.getImageData(this.posX, this.posY, this.width, this.height);
-            console.log(this.posX, this.posY, this.width, this.height)
         }
     }
 

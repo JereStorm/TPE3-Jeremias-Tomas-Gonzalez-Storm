@@ -9,7 +9,7 @@ class FilterHelper {
         }
     }
 
-    cleanFiltersExcept(filterName = 'null') {
+    diselectedFiltersExcept(filterName = 'null') {
         for (let otherFiltro of this.nodeFilters) {
             if (otherFiltro.getAttribute('data-id') != filterName) {
                 otherFiltro.classList.remove(this.styles.selected);
