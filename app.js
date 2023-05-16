@@ -126,7 +126,7 @@ canvas.addEventListener("mousedown", function (e) {
         drawing = true;
         myPencil = new Pencil(x, y, ctx, color, range, 'none');
         myPencil.draw();
-    } else if (myImg && myImg.estaElPunto(x, y)) {
+    } else if (myImg && myImg.isInPoint(x, y)) {
         //Set Draging
         draging = true;
         canvas.style.cursor = 'move';
@@ -136,13 +136,14 @@ canvas.addEventListener("mousedown", function (e) {
 
 })
 
+//CANVAS MOUSEMOVE
 canvas.addEventListener("mousemove", function (evt) {
     //Get Mouse position
     const { x, y } = getMousePos(evt);
 
     //Handling cursor style (independently of App State) 
     if (!pencil_btn.classList.contains('selected') && !eraser_btn.classList.contains('selected')) {
-        if (myImg && !draging && myImg.estaElPunto(x, y)) {
+        if (myImg && !draging && myImg.isInPoint(x, y)) {
             canvas.style.cursor = 'pointer';
         } else if (!draging) {
             canvas.style.cursor = 'default';
@@ -169,12 +170,14 @@ canvas.addEventListener("mouseup", function (e) {
     } else if (draging) {
         draging = false;
         canvas.style.cursor = 'default';
+        //change filters style
         filterHelper.activateFilters();
     }
 })
 
-
-//---------------------------- FUNCIONES DEL DRAW ------------------------------------//
+// ------------------------------------------
+//  APP FUNCTIONS
+// ------------------------------------------
 
 /**
  * This Method that cleans the Canvas by drawing a white rect
@@ -284,7 +287,7 @@ function filtersDriver(filtroNodeHTML) {
     //clean filters style
     filterHelper.diselectedFiltersExcept(filterName);
 
-    //validate if new filter name is equals atributte last filter of image
+    //validate if new filter name is equals to atributte last filter from image
     //then handler filters styles and reset the actual data to oldest data 
     if (filterName == myImg.getLastFilter()) {
         filtroNodeHTML.classList.toggle(filterHelper.styles.selected);

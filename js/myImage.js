@@ -20,16 +20,27 @@ class myImage {
         return this.lastFilter;
     }
 
+    /**
+     * This Method update posX and posY from image and draw the image data
+     * @param {number} x 
+     * @param {number} y 
+     */
     moveTo(x, y) {
         this.posX = Math.round(x);
         this.posY = Math.round(y);
         this.drawImageData();
     };
 
+    /**
+     * This method update orginal data with the actual data
+     */
     updateOriginalData() {
         this.originalData = this.actualData;
     }
 
+    /**
+     * This method reset the actual data with the last one original data
+     */
     resetActualData() {
         this.actualData = new ImageData(
             new Uint8ClampedArray(this.originalData.data),
@@ -38,6 +49,10 @@ class myImage {
         )
     }
 
+    /**
+     * This method clean canvas and update the image data accordingly
+     * the state from actualData and originalData
+     */
     drawImageData() {
         this.ctx.beginPath();
         this.ctx.fillStyle = '#ffffff';
@@ -47,10 +62,21 @@ class myImage {
         this.ctx.putImageData(this.actualData ? this.actualData : this.originalData, this.posX, this.posY);
     }
 
-    estaElPunto(x, y) {
+    /**
+     * This Function calculate in function of params x and y
+     * if the image is in the postion of mouse and returns the result
+     * @param {number} x 
+     * @param {number} y 
+     * @returns {boolean}
+     */
+    isInPoint(x, y) {
         return ((x > this.posX) && (x < this.posX + this.width) && (y > this.posY) && (y < this.posY + this.height));
     }
 
+    /**
+     * This method clean canvas and draw the image
+     * and the first time set atributte originalData
+     */
     myDrawImage() {
         this.ctx.beginPath();
         this.ctx.fillStyle = '#ffffff';
@@ -59,20 +85,18 @@ class myImage {
 
         this.ctx.drawImage(this.img, this.posX, this.posY, this.width, this.height);
 
+        //To start originalData is null 
         if (!this.originalData) {
             this.originalData = this.ctx.getImageData(this.posX, this.posY, this.width, this.height);
         }
     }
 
     filterInvert() {
-
-
         let imageData = new ImageData(
             new Uint8ClampedArray(this.originalData.data),
             this.originalData.width,
             this.originalData.height
         )
-
 
         const data = imageData.data;
 
@@ -106,7 +130,6 @@ class myImage {
         this.ctx.putImageData(imageData, this.posX, this.posY);
         this.actualData = imageData;
         this.setLastFilter('sepia');
-
     }
 
     filterBrightness() {
@@ -115,7 +138,6 @@ class myImage {
             this.originalData.width,
             this.originalData.height
         )
-
 
         const data = imageData.data;
 
@@ -144,7 +166,6 @@ class myImage {
             this.originalData.height
         )
 
-
         const data = imageData.data;
 
         for (let i = 0; i < data.length; i += 4) {
@@ -157,7 +178,6 @@ class myImage {
         this.ctx.putImageData(imageData, this.posX, this.posY);
         this.actualData = imageData;
         this.setLastFilter('grey');
-
     }
 
     filterBinarization() {
@@ -181,6 +201,7 @@ class myImage {
             }
 
         }
+
         this.ctx.putImageData(imageData, this.posX, this.posY);
         this.actualData = imageData;
         this.setLastFilter('binarization');
@@ -219,12 +240,9 @@ class myImage {
     }
 
     filterBlur() {
-
         if (this.img.src == '') {
             return
         }
-
-
 
         let imageData = new ImageData(
             new Uint8ClampedArray(this.originalData.data),
@@ -234,12 +252,6 @@ class myImage {
 
         let validW = imageData.width;
         let validH = imageData.height;
-
-        let box_kernel2 = [
-            [1 / 9, 1 / 9, 1 / 9],
-            [1 / 9, 1 / 9, 1 / 9],
-            [1 / 9, 1 / 9, 1 / 9]
-        ];
 
         let box_kernel = [
             [1 / 256, 4 / 256, 6 / 256, 4 / 256, 1 / 256],
@@ -271,6 +283,7 @@ class myImage {
                 imageData.data[(x + y * validW) * 4 + 2] = acc[2];
             }
         }
+
         this.ctx.putImageData(imageData, this.posX, this.posY);
         this.actualData = imageData;
         this.setLastFilter('blur');
