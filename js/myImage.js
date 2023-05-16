@@ -240,9 +240,6 @@ class myImage {
     }
 
     filterBlur() {
-        if (this.img.src == '') {
-            return
-        }
 
         let imageData = new ImageData(
             new Uint8ClampedArray(this.originalData.data),
@@ -265,12 +262,15 @@ class myImage {
 
         for (let x = offSet; x < validW - offSet; x++) {
             for (let y = offSet; y < validH - offSet; y++) {
+                //Acc is the final color that we set in the especific point x and y of imageData
                 let acc = [0, 0, 0];
+                //We move in the surrounding pixels and take their data
                 for (let a = 0; a < box_kernel.length; a++) {
                     for (let b = 0; b < box_kernel.length; b++) {
                         let xn = x + a - offSet;
                         let yn = y + b - offSet;
 
+                        //surrounding pixels
                         let pixel = (xn + yn * validW) * 4;
 
                         acc[0] += imageData.data[pixel] * box_kernel[a][b];
@@ -278,6 +278,7 @@ class myImage {
                         acc[2] += imageData.data[pixel + 2] * box_kernel[a][b];
                     }
                 }
+                //finally set in the actual pixel acc data
                 imageData.data[(x + y * validW) * 4] = acc[0];
                 imageData.data[(x + y * validW) * 4 + 1] = acc[1];
                 imageData.data[(x + y * validW) * 4 + 2] = acc[2];
@@ -290,10 +291,6 @@ class myImage {
     }
 
     filterEdgeDetection() {
-
-        if (this.img.src == '') {
-            return
-        }
 
         let imageData = new ImageData(
             new Uint8ClampedArray(this.originalData.data),
@@ -327,17 +324,28 @@ class myImage {
                         magY += intensity * kernelY[a][b];
                     }
                 }
+                //Draw in black and white the magnitude
                 let color = parseInt(Math.sqrt((magX * magX) + (magY * magY)));
                 imageData.data[((x + y * validW) * 4)] = color;
                 imageData.data[((x + y * validW) * 4) + 1] = color;
                 imageData.data[((x + y * validW) * 4) + 2] = color;
-
             }
         }
+
         this.ctx.putImageData(imageData, this.posX, this.posY);
         this.actualData = imageData;
         this.setLastFilter('edgeDetection');
     }
+
+    /**
+     * This method calculate the average in "xn" and "yn" especific point of param "imageData"
+     * @param {ImageData} imageData
+     * @param {number} xn
+     * @param {number} yn
+     * @param {number} validW
+     * 
+     * @returns {number}
+     */
     calcIntensity(imageData, xn, yn, validW) {
         return (
             (imageData.data[((xn + yn * validW) * 4)] +
@@ -346,20 +354,3 @@ class myImage {
         );
     }
 }
-
-
-
-
-/*FILTROS FALOPAS:
-        let deteccion_bordes = [
-            [-1, -1, -1],
-            [-1, 8, -1],
-            [-1, -1, -1]
-        ];
-
-imageData.data[(x + y * this.newWidth) * 4] = (acc[2] + 255) / 2;
-imageData.data[(x + y * this.newWidth) * 4 + 1] = (acc[0] + 255) / 2;
-imageData.data[(x + y * this.newWidth) * 4 + 2] = (acc[1] + 255) / 2;
-imageData.data[(x + y * this.newWidth) * 4 + 3] = 255;
-
-*/

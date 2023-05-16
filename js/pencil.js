@@ -13,7 +13,11 @@ class Pencil {
         this.lineWidth = lineWidth;
     }
 
-
+    /**
+     * This Method update the positions where draw
+     * @param {number} x represent the new Position
+     * @param {number} y represent the new Position
+     */
     moveTo(x, y) {
         this.startX = this.endX;
         this.startY = this.endY;
@@ -21,6 +25,9 @@ class Pencil {
         this.endY = y;
     }
 
+    /**
+     * This Method draw a line with posX, posY, endX, and endY into canvas
+     */
     draw() {
 
         this.ctx.beginPath();
